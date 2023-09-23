@@ -1,86 +1,26 @@
-import * as React from "react";
+import React, { useEffect, useState } from "react";
+import { View, Text, Button } from "react-native";
 import {
-  View,
-  StyleSheet,
-  Button,
-  Text,
-  ActivityIndicator,
-} from "react-native";
-import { Video, ResizeMode } from "expo-av";
-import axios from "axios";
+  RTCView,
+  RTCPeerConnection,
+  RTCIceCandidate,
+  RTCSessionDescription,
+  mediaDevices,
+} from "react-native-webrtc";
+const webcamUrl = "http://your-laptop-ip:5000/video_feed";
+const App = () => {
+  const [stream, setStream] = useState(null);
 
-export default function App() {
-  const video = React.useRef(null);
-  const serverUrl =
-    "https://node-streaming-server-kwrdu5bz8-omar-sarfraz.vercel.app/videoplayer";
-  const [status, setStatus] = React.useState({});
-  const [loading, setLoading] = React.useState(true);
+  useEffect(() => {}, []);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.heading}>Live Streaming Video From Server</Text>
-      {loading && (
-        <ActivityIndicator
-          size={"large"}
-          color={"black"}
-          style={{ marginTop: 20 }}
-        />
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      {stream && (
+        <RTCView style={{ flex: 1, width: "100%" }} streamURL={webcamUrl} />
       )}
-      <Video
-        ref={video}
-        style={styles.video}
-        source={{
-          uri: serverUrl,
-          headers: { range: "bytes=0-" },
-        }}
-        // useNativeControls
-        shouldPlay
-        resizeMode={ResizeMode.COVER}
-        isLooping
-        onPlaybackStatusUpdate={(status) => setStatus(() => status)}
-        onError={(error) => {
-          console.log("Error in loading", error);
-        }}
-        onLoad={() => {
-          setLoading(false);
-        }}
-      />
-      <View style={styles.buttons}>
-        <Button
-          title={status.isPlaying ? "Pause" : "Play"}
-          onPress={() =>
-            status.isPlaying
-              ? video.current.pauseAsync()
-              : video.current.playAsync()
-          }
-        />
-      </View>
+      <Text>Video Streaming from Laptop</Text>
     </View>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    backgroundColor: "#ecf0f1",
-    alignItems: "center",
-  },
-  video: {
-    alignSelf: "center",
-    width: "100%",
-    height: 200,
-    marginTop: 20,
-  },
-  buttons: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 20,
-  },
-  heading: {
-    fontSize: 18,
-    fontWeight: "500",
-    color: "#000000",
-  },
-});
+export default App;
