@@ -1,24 +1,51 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Button } from "react-native";
-import {
-  RTCView,
-  RTCPeerConnection,
-  RTCIceCandidate,
-  RTCSessionDescription,
-  mediaDevices,
-} from "react-native-webrtc";
-const webcamUrl = "http://your-laptop-ip:5000/video_feed";
+import { View, Text } from "react-native";
+import { RTCView, mediaDevices } from "react-native-webrtc";
+import { io } from "socket.io-client";
+
 const App = () => {
   const [stream, setStream] = useState(null);
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    // Connect to the signaling server
+    const socket = io("wss://192.168.1.7:8765");
+    socket.on("connect_error", (error) => {
+      console.log("error connecting", error);
+      socket.connect();
+    });
+    socket.on("connect", () => {
+      console.log("socket id", socket.id);
+    });
+    // Handle incoming video stream
+    socket.on("stream", (frameData) => {
+      console.log("stream");
+      const frameArray = new Uint8Array(frameData);
+      const blob = new Blob([frameArray], { type: "image/jpeg" });
+
+      mediaDevices.getUserMedia({ video: true }).then((localStream) => {
+        const newStream = new MediaStream([localStream.getVideoTracks()[0]]);
+        newStream.addTrack(MediaStream.createTrack(blob));
+
+        setStream(newStream);
+      });
+    });
+
+    // Clean up when component unmounts
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      {stream && (
-        <RTCView style={{ flex: 1, width: "100%" }} streamURL={webcamUrl} />
+    <View>
+      {stream ? (
+        <RTCView
+          streamURL={stream ? stream.toURL() : ""}
+          style={{ width: 320, height: 240 }}
+        />
+      ) : (
+        <Text>No video stream available</Text>
       )}
-      <Text>Video Streaming from Laptop</Text>
     </View>
   );
 };
