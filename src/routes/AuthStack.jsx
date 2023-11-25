@@ -20,7 +20,6 @@ const AuthStackScreen = () => {
         options={{ headerShown: false }}
       />
       <AuthStack.Screen name="Register" component={RegisterScreen} />
-     
     </AuthStack.Navigator>
   );
 };

@@ -15,3 +15,7 @@ export const COLORS = {
   gray: "#808080",
   lightGray: "#D3D3D3",
 };
+
+//TODO: Move following to env
+export const SERVER_URL = "http://13.51.86.179:5500";
+export const API_BASE_URL = SERVER_URL + "/api";
