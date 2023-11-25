@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Button, Input, Text } from "@rneui/themed";
 import { COLORS } from "../../constants";
 import useAuth from "../../hooks/useAuth";
+import Loader from "../../components/Loader";
 
 const Register = ({ navigation }) => {
   // Variables
@@ -152,14 +153,19 @@ const Register = ({ navigation }) => {
           }
           secureTextEntry
         />
-
-        <Button
-          color="primary"
-          title={"Register"}
-          size="lg"
-          containerStyle={{ width: 200, borderRadius: 5, marginTop: 20 }}
-          onPress={handleRegisterPress}
-        />
+        <View style={{ marginTop: 20 }}>
+          {loading ? (
+            <Loader />
+          ) : (
+            <Button
+              color="primary"
+              title={"Register"}
+              size="lg"
+              containerStyle={{ width: 200, borderRadius: 5 }}
+              onPress={handleRegisterPress}
+            />
+          )}
+        </View>
       </View>
       <Text style={{ paddingVertical: 10 }}>
         Already have an account?{" "}

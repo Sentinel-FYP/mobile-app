@@ -10,10 +10,11 @@ const HomeStackScreen = () => {
     <HomeStack.Navigator
       screenOptions={{
         animation: "slide_from_right",
+        headerShown: false,
       }}
     >
       <HomeStack.Screen
-        name="Home"
+        name="HomeScreen"
         component={HomeScreen}
         options={{ headerShown: false }}
       />

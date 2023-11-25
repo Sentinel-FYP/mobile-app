@@ -7,11 +7,9 @@ import HomeStackScreen from "./HomeStack";
 const Tab = createBottomTabNavigator();
 const TabNavigation = () => {
   return (
-    <NavigationContainer>
-      <Tab.Navigator>
-        <Tab.Screen name="Home" component={HomeStackScreen} />
-      </Tab.Navigator>
-    </NavigationContainer>
+    <Tab.Navigator screenOptions={{ headerShown: false }}>
+      <Tab.Screen name="Home" component={HomeStackScreen} />
+    </Tab.Navigator>
   );
 };
 

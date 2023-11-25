@@ -3,10 +3,12 @@ import { useState } from "react";
 import { Button, Input, Text } from "@rneui/themed";
 import { COLORS } from "../../constants";
 import useAuth from "../../hooks/useAuth";
+import useStorage from "../../hooks/useStorage";
 
 const Login = ({ navigation }) => {
   // Variables
   const { login } = useAuth();
+  const { setAuthToken, setLocalUser } = useStorage();
   const [email, setEmail] = useState({ value: null, errorMessage: null });
   const [password, setPassword] = useState({ value: null, errorMessage: null });
 
@@ -15,7 +17,7 @@ const Login = ({ navigation }) => {
     navigation.navigate("Register");
   };
 
-  const handleLoginPress = () => {
+  const handleLoginPress = async () => {
     setEmail({ ...email, errorMessage: null });
     setPassword({ ...password, errorMessage: null });
     if (!email.value) {
@@ -29,9 +31,13 @@ const Login = ({ navigation }) => {
     }
 
     try {
-      login(email.value, password.value);
+      const userData = await login(email.value, password.value);
+      console.log(userData);
+      await setAuthToken(userData.token);
+      await setLocalUser(userData.user);
+      navigation.navigate("TabNavigation");
     } catch (error) {
-      console.error("Error while loggin in: ", error);
+      console.error("Error while logging in: ", error);
     }
   };
 

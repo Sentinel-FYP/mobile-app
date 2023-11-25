@@ -25,7 +25,7 @@ const useAuth = () => {
       const loginUrl = API_BASE_URL + "/login";
       const loginData = { email: email, password: password };
       const user = await axios.post(loginUrl, loginData);
-      console.log("Successfully logged in: ", user);
+      return user.data;
     } catch (error) {
       throw error;
     } finally {
