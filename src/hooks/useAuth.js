@@ -11,7 +11,7 @@ const useAuth = () => {
     try {
       const signUpUrl = API_BASE_URL + "/signup";
       const user = await axios.post(signUpUrl, userData);
-      console.log("User registered: ", user.data);
+      return user.data;
     } catch (error) {
       throw error;
     } finally {
