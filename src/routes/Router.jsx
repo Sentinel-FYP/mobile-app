@@ -6,11 +6,10 @@ import React, { useState } from "react";
 import { View, ActivityIndicator, StyleSheet } from "react-native";
 import { COLORS } from "../constants";
 
-
 const RouterStack = createNativeStackNavigator();
 
 const Router = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
   return (
     <NavigationContainer>
       <RouterStack.Navigator
