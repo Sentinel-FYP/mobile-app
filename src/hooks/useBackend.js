@@ -8,15 +8,22 @@ const useBackend = () => {
   const { getAuthToken } = useStorage();
   const [loading, setLoading] = useState(false);
   async function getNotificationsFromServer() {
+    setLoading(true);
     try {
-      const url = API_BASE_URL + "/anomalyLog";
-      const fromDevice = "6558f04547674cc283de271b";
+      const deviceId = "6558f04547674cc283de271b";
+      const url = `${API_BASE_URL}/anomalyLog/${deviceId}`;
       const authToken = await getAuthToken();
+      const response = await axios.get(url, {
+        headers: { Authorization: `Bearer ${authToken}` },
+      });
+      return response.data;
     } catch (error) {
-      throw error;
+      throw error.response.data;
+    } finally {
+      setLoading(false);
     }
   }
-  return {};
+  return { loading, getNotificationsFromServer };
 };
 
 export default useBackend;
