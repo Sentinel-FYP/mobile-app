@@ -2,9 +2,11 @@ import { View, Text } from "react-native";
 import { useState } from "react";
 import axios from "axios";
 import { API_BASE_URL } from "../constants";
+import useStorage from "./useStorage";
 
 const useAuth = () => {
   const [loading, setLoading] = useState(false);
+  const { removeAuthToken, removeLocalUser } = useStorage();
 
   async function register(userData) {
     setLoading(true);
@@ -33,7 +35,19 @@ const useAuth = () => {
     }
   }
 
-  return { register, login };
+  async function logout() {
+    setLoading(true);
+    try {
+      await removeAuthToken();
+      await removeLocalUser();
+    } catch (error) {
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return { register, login, logout };
 };
 
 export default useAuth;

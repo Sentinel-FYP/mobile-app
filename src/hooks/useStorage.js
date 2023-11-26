@@ -36,7 +36,33 @@ const useStorage = () => {
       return null;
     }
   }
-  return { getAuthToken, setAuthToken, getLocalUser, setLocalUser };
+
+  async function removeLocalUser() {
+    try {
+      await AsyncStorage.removeItem("user");
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  async function removeAuthToken() {
+    try {
+      await AsyncStorage.removeItem("authToken");
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  return {
+    getAuthToken,
+    setAuthToken,
+    getLocalUser,
+    setLocalUser,
+    removeAuthToken,
+    removeLocalUser,
+  };
 };
 
 export default useStorage;

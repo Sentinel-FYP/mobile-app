@@ -1,10 +1,18 @@
-import { View, Text, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
 import { useState } from "react";
 import { GlobalStyles } from "../../global/GlobalStyles";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { COLORS } from "../../constants";
+import useAuth from "../../hooks/useAuth";
 
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }) => {
+  const { logout } = useAuth();
   const [devices, setDevices] = useState([
     {
       name: "Sentinel Office",
@@ -17,63 +25,43 @@ const HomeScreen = () => {
     },
   ]);
 
+  const handleLogoutPress = async () => {
+    try {
+      await logout();
+      navigation.navigate("AuthStack");
+    } catch (error) {
+      console.error("Error while logging out: ", error);
+    }
+  };
+
   const renderItem = ({ item, index }) => {
     return (
-      <View
-        style={{
-          width: "100%",
-          paddingHorizontal: 30,
-          marginTop: 20,
-        }}
-      >
-        <View style={{ width: "100%", height: 300 }}>
-          <Text style={{ fontSize: 18, fontWeight: 500 }}>{item.name}</Text>
-          <View style={{ width: "100%", flex: 1 }}>
-            <View
-              style={{
-                flex: 1,
-                width: "100%",
-                flexDirection: "row",
-                flexWrap: "wrap",
-
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
+      <View style={styles.deviceContainer}>
+        <View style={styles.deviceNameConatiner}>
+          <Text style={styles.deviceName}>{item.name}</Text>
+          <View style={styles.camerasContainer}>
+            <View style={styles.camerasWrapper}>
               {item.cameras.map((camera, index) => {
                 return (
-                  <View
-                    key={camera.name}
-                    style={{
-                      width: "50%",
-                      height: "50%",
-                      borderColor: "black",
-                      borderWidth: 1,
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
+                  <TouchableOpacity key={camera.name} style={styles.camera}>
                     <Text>{camera.name}</Text>
-                  </View>
+                  </TouchableOpacity>
                 );
               })}
             </View>
-            <View
-              style={{
-                width: "100%",
-                height: 40,
-                borderWidth: 1,
-                borderColor: "black",
-                borderTopWidth: 0,
-                flexDirection: "row",
-                justifyContent: "space-around",
-                alignItems: "center",
-              }}
-            >
-              <Icon name="delete" color={COLORS.black} size={30} />
-              <Icon name="group" color={COLORS.black} size={30} />
-              <Icon name="eye" color={COLORS.black} size={30} />
-              <Icon name="dots-vertical" color={COLORS.black} size={30} />
+            <View style={styles.deviceActionsContainer}>
+              <TouchableOpacity>
+                <Icon name="delete" color={COLORS.black} size={30} />
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <Icon name="group" color={COLORS.black} size={30} />
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <Icon name="eye" color={COLORS.black} size={30} />
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <Icon name="dots-vertical" color={COLORS.black} size={30} />
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -83,6 +71,9 @@ const HomeScreen = () => {
 
   return (
     <View style={GlobalStyles.container}>
+      <Text style={styles.logoutBtn} onPress={handleLogoutPress}>
+        Logout
+      </Text>
       <FlatList
         style={{ flex: 1, width: "100%" }}
         data={devices}
@@ -93,3 +84,57 @@ const HomeScreen = () => {
 };
 
 export default HomeScreen;
+
+const styles = StyleSheet.create({
+  logoutBtn: {
+    alignSelf: "flex-end",
+    margin: 20,
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  deviceActionsContainer: {
+    width: "100%",
+    height: 40,
+    borderWidth: 1,
+    borderColor: "black",
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+  },
+  camera: {
+    width: "50%",
+    height: "50%",
+    borderColor: "black",
+    borderWidth: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  camerasWrapper: {
+    flex: 1,
+    width: "100%",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  camerasContainer: {
+    width: "100%",
+    flex: 1,
+  },
+  deviceName: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginLeft: 5,
+  },
+  deviceNameConatiner: {
+    width: "100%",
+    height: 300,
+    borderWidth: 1,
+    borderColor: COLORS.black,
+  },
+  deviceContainer: {
+    width: "100%",
+    paddingHorizontal: 30,
+    marginTop: 20,
+  },
+});
