@@ -16,7 +16,7 @@ const useStorage = () => {
       const user = JSON.parse(await AsyncStorage.getItem("user"));
       return user;
     } catch (error) {
-      throw error;
+      return null;
     }
   }
 
@@ -33,7 +33,7 @@ const useStorage = () => {
       const authToken = await AsyncStorage.getItem("authToken");
       return authToken;
     } catch (error) {
-      throw error;
+      return null;
     }
   }
   return { getAuthToken, setAuthToken, getLocalUser, setLocalUser };

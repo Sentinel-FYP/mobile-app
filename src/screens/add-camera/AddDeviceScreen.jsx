@@ -4,7 +4,7 @@ import React from "react";
 const AddDeviceScreen = () => {
   return (
     <View>
-      <Text>AddCameraScreen</Text>
+      <Text>Add Device</Text>
     </View>
   );
 };
