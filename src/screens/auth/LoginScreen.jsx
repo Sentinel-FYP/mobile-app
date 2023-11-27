@@ -1,4 +1,4 @@
-import { View, StyleSheet, ScrollView } from "react-native";
+import { View, StyleSheet, ScrollView, Alert } from "react-native";
 import { useState } from "react";
 import { Button, Input, Text } from "@rneui/themed";
 import { COLORS } from "../../constants";
@@ -38,6 +38,7 @@ const Login = ({ navigation }) => {
       navigation.navigate("TabNavigation");
     } catch (error) {
       console.error("Error while logging in: ", error);
+      Alert.alert(error);
     }
   };
 

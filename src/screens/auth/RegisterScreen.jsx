@@ -1,4 +1,4 @@
-import { View, StyleSheet, ScrollView } from "react-native";
+import { View, StyleSheet, ScrollView, Alert } from "react-native";
 import { useState } from "react";
 import { Button, Input, Text } from "@rneui/themed";
 import { COLORS } from "../../constants";
@@ -97,8 +97,10 @@ const Register = ({ navigation }) => {
         `Error while registering user: Status: ${error.response?.status} Message: ${error.response?.data?.message}
         `
       );
+      Alert.alert(error);
     }
   };
+
   return (
     <ScrollView
       style={{ width: "100%" }}
