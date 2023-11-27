@@ -35,6 +35,7 @@ const Login = ({ navigation }) => {
       console.log(userData);
       await setAuthToken(userData.token);
       await setLocalUser(userData.user);
+      Alert.alert("Logged in");
       navigation.navigate("TabNavigation");
     } catch (error) {
       console.error("Error while logging in: ", error);
