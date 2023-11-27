@@ -8,7 +8,7 @@ import Loader from "../../components/Loader";
 
 const Login = ({ navigation }) => {
   // Variables
-  const { login } = useAuth();
+  const { login, loading } = useAuth();
   const { setAuthToken, setLocalUser } = useStorage();
   const [email, setEmail] = useState({ value: null, errorMessage: null });
   const [password, setPassword] = useState({ value: null, errorMessage: null });
