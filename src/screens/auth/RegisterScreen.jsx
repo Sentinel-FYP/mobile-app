@@ -93,11 +93,11 @@ const Register = ({ navigation }) => {
       const user = await register(userData);
       navigation.navigate("Login");
     } catch (error) {
+      Alert.alert("Error while registering user", error);
       console.error(
         `Error while registering user: Status: ${error.response?.status} Message: ${error.response?.data?.message}
         `
       );
-      Alert.alert(error);
     }
   };
 

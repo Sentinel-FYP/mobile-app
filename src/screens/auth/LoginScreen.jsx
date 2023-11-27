@@ -4,6 +4,7 @@ import { Button, Input, Text } from "@rneui/themed";
 import { COLORS } from "../../constants";
 import useAuth from "../../hooks/useAuth";
 import useStorage from "../../hooks/useStorage";
+import Loader from "../../components/Loader";
 
 const Login = ({ navigation }) => {
   // Variables
@@ -35,11 +36,10 @@ const Login = ({ navigation }) => {
       console.log(userData);
       await setAuthToken(userData.token);
       await setLocalUser(userData.user);
-      Alert.alert("Logged in");
       navigation.navigate("TabNavigation");
     } catch (error) {
+      Alert.alert("Error while loggin in", error);
       console.error("Error while logging in: ", error);
-      Alert.alert(error);
     }
   };
 
@@ -73,14 +73,19 @@ const Login = ({ navigation }) => {
           errorMessage={password.errorMessage}
           secureTextEntry
         />
-
-        <Button
-          color="primary"
-          title={"Login"}
-          size="lg"
-          containerStyle={{ width: 200, borderRadius: 5 }}
-          onPress={handleLoginPress}
-        />
+        <View style={{ marginTop: 20 }}>
+          {loading ? (
+            <Loader />
+          ) : (
+            <Button
+              color="primary"
+              title={"Login"}
+              size="lg"
+              containerStyle={{ width: 200, borderRadius: 5 }}
+              onPress={handleLoginPress}
+            />
+          )}
+        </View>
       </View>
       <Text style={{ paddingVertical: 10 }}>
         Don't have an account?{" "}
