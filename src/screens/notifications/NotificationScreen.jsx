@@ -14,8 +14,9 @@ const NotificationScreen = () => {
     const getLogs = async () => {
       try {
         const logs = await getNotificationsFromServer();
-        console.log(logs[0].fromDevice);
-        setNotifications(logs);
+        console.log("logs[0] is", JSON.stringify(logs[0].fromDevice, null, 2));
+        console.log("cameras", logs[0].fromDevice.cameras);
+        setNotifications(logs.reverse());
       } catch (error) {
         console.error(error);
       }
@@ -29,14 +30,19 @@ const NotificationScreen = () => {
           flex: 1,
           flexDirection: "row",
           height: 100,
-          borderBottomWidth: 1,
-          borderColor: "black",
           backgroundColor: COLORS.white,
+          padding: 10,
+          marginTop: 10,
+          elevation: 5,
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.3,
+          shadowRadius: 3,
         }}
       >
-        <View style={{ width: "30%" }}>
+        <View style={{ width: "30%", borderRadius: 10 }}>
           <Image
-            style={{ width: "100%", height: "100%" }}
+            style={{ width: "100%", height: "100%", borderRadius: 10 }}
             source={{ uri: `data:image/png;base64,${item.thumbnail}` }}
           />
         </View>
@@ -44,7 +50,7 @@ const NotificationScreen = () => {
           <View style={{ width: "100%", alignItems: "center" }}>
             <Text
               style={{ fontSize: 16, fontWeight: 500 }}
-            >{`${item.fromDevice.deviceID} • Camera 1`}</Text>
+            >{`${item.fromDevice.deviceID} • ${item.fromDevice.cameras[0].cameraName}`}</Text>
 
             <Text style={{ marginTop: 10 }}>{`${
               formatDateTime(item.occurredAt).date
@@ -60,11 +66,16 @@ const NotificationScreen = () => {
       {notifications.length == 0 ? (
         <Loader />
       ) : (
-        <FlatList
-          data={notifications}
-          renderItem={renderItem}
-          style={{ flex: 1, width: "100%" }}
-        />
+        <View style={GlobalStyles.container}>
+          <Text style={{ fontSize: 24, fontWeight: "bold", padding: 20 }}>
+            Notifications
+          </Text>
+          <FlatList
+            data={notifications}
+            renderItem={renderItem}
+            style={{ flex: 1, width: "100%" }}
+          />
+        </View>
       )}
     </View>
   );

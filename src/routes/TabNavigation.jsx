@@ -5,8 +5,9 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import HomeStackScreen from "./HomeStack";
 import NotificationStackScreen from "./NotificationStack";
-import { lightColors } from "@rneui/base";
+import { darkColors, lightColors } from "@rneui/base";
 import AddDeviceStackScreen from "./AddDeviceStack";
+import { COLORS } from "../constants";
 
 const Tab = createBottomTabNavigator();
 const TabNavigation = () => {
@@ -28,7 +29,7 @@ const TabNavigation = () => {
 
           return <Icon name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: lightColors.primary,
+        tabBarActiveTintColor: COLORS.primaryColor,
         tabBarInactiveTintColor: lightColors.grey3,
         headerShown: false,
       })}

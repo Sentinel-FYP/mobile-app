@@ -1,6 +1,6 @@
 export const COLORS = {
   // focusedIcon: '#F6DE84',
-  primaryColor: "#FFE361",
+  primaryColor: "#02776B",
   unfocusedIcon: "#6C6C6C",
   focusedLabel: "#FFFFFF",
   unfocusedLabel: "#6C6C6C",
