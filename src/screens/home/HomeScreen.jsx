@@ -10,9 +10,11 @@ import { GlobalStyles } from "../../global/GlobalStyles";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { COLORS } from "../../constants";
 import useAuth from "../../hooks/useAuth";
+import MoreOptions from "../../components/MoreOptions";
 
 const HomeScreen = ({ navigation }) => {
   const { logout } = useAuth();
+  const [moreOptionsVisible, setMoreOptionsVisible] = useState(false);
   const [devices, setDevices] = useState([
     {
       name: "Sentinel Office",
@@ -34,38 +36,68 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
+  const closeMoreOptions = () => {
+    setMoreOptionsVisible(false);
+  };
+  const moreOptions = [
+    {
+      option: "Add New Camera",
+      onPress: () => {
+        console.log("add new camrea pressed");
+        navigation.navigate("AddCamera");
+        closeMoreOptions();
+      },
+    },
+    {
+      option: "Show Device Info",
+      onPress: () => {
+        console.log("show deive info pressed");
+        closeMoreOptions();
+      },
+    },
+  ];
+
   const renderItem = ({ item, index }) => {
     return (
-      <View style={styles.deviceContainer}>
-        <View style={styles.deviceNameConatiner}>
-          <Text style={styles.deviceName}>{item.name}</Text>
-          <View style={styles.camerasContainer}>
-            <View style={styles.camerasWrapper}>
-              {item.cameras.map((camera, index) => {
-                return (
-                  <TouchableOpacity key={camera.name} style={styles.camera}>
-                    <Text>{camera.name}</Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
-            <View style={styles.deviceActionsContainer}>
-              <TouchableOpacity>
-                <Icon name="delete" color={COLORS.black} size={30} />
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Icon name="group" color={COLORS.black} size={30} />
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Icon name="eye" color={COLORS.black} size={30} />
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Icon name="dots-vertical" color={COLORS.black} size={30} />
-              </TouchableOpacity>
+      <>
+        <View style={styles.deviceContainer}>
+          <View style={styles.deviceNameConatiner}>
+            <Text style={styles.deviceName}>{item.name}</Text>
+            <View style={styles.camerasContainer}>
+              <View style={styles.camerasWrapper}>
+                {item.cameras.map((camera, index) => {
+                  return (
+                    <TouchableOpacity key={camera.name} style={styles.camera}>
+                      <Text>{camera.name}</Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+              <View style={styles.deviceActionsContainer}>
+                <TouchableOpacity>
+                  <Icon name="delete" color={COLORS.black} size={30} />
+                </TouchableOpacity>
+                <TouchableOpacity>
+                  <Icon name="group" color={COLORS.black} size={30} />
+                </TouchableOpacity>
+                <TouchableOpacity>
+                  <Icon name="eye" color={COLORS.black} size={30} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{ overflow: "visible" }}
+                  onPress={() => setMoreOptionsVisible(!moreOptionsVisible)}
+                >
+                  <Icon name="dots-vertical" color={COLORS.black} size={30} />
+
+                  {moreOptionsVisible && (
+                    <MoreOptions moreOptions={moreOptions} />
+                  )}
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         </View>
-      </View>
+      </>
     );
   };
 
