@@ -23,7 +23,24 @@ const useBackend = () => {
       setLoading(false);
     }
   }
-  return { loading, getNotificationsFromServer };
+
+  async function getEdgeDevices() {
+    setLoading(true);
+    try {
+      const url = `${API_BASE_URL}/edgeDevices`;
+      const authToken = await getAuthToken();
+      const response = await axios.get(url, {
+        headers: { Authorization: `Bearer ${authToken}` },
+      });
+      console.log(JSON.stringify(response.data, null, 2));
+      return response.data;
+    } catch (error) {
+      throw error.response.data;
+    } finally {
+      setLoading(false);
+    }
+  }
+  return { loading, getNotificationsFromServer, getEdgeDevices };
 };
 
 export default useBackend;
