@@ -46,18 +46,10 @@ const Login = ({ navigation }) => {
   return (
     <ScrollView
       style={{ width: "100%" }}
-      contentContainerStyle={{
-        flexGrow: 1,
-        width: "100%",
-        justifyContent: "center",
-        alignItems: "center",
-        paddingHorizontal: 30,
-      }}
+      contentContainerStyle={styles.scrollViewContentContainer}
     >
       <Text h2>Login</Text>
-      <View
-        style={{ width: "100%", alignItems: "center", paddingVertical: 40 }}
-      >
+      <View style={styles.inputContainer}>
         <Input
           label={"Email"}
           labelStyle={styles.inputLabel}
@@ -89,10 +81,7 @@ const Login = ({ navigation }) => {
       </View>
       <Text style={{ paddingVertical: 10 }}>
         Don't have an account?{" "}
-        <Text
-          style={{ color: "blue", fontWeight: "bold" }}
-          onPress={handleRegisterNowPress}
-        >
+        <Text style={styles.registerNowText} onPress={handleRegisterNowPress}>
           Register Now
         </Text>
       </Text>
@@ -102,6 +91,22 @@ const Login = ({ navigation }) => {
 
 export default Login;
 const styles = StyleSheet.create({
+  registerNowText: {
+    color: "blue",
+    fontWeight: "bold",
+  },
+  inputContainer: {
+    width: "100%",
+    alignItems: "center",
+    paddingVertical: 40,
+  },
+  scrollViewContentContainer: {
+    flexGrow: 1,
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 30,
+  },
   inputLabel: {
     color: COLORS.black,
   },

@@ -1,4 +1,4 @@
-import { View, Text, FlatList, Image } from "react-native";
+import { View, Text, FlatList, Image, StyleSheet } from "react-native";
 import { useLayoutEffect, useState } from "react";
 import { GlobalStyles } from "../../global/GlobalStyles";
 import useBackend from "../../hooks/useBackend";
@@ -25,34 +25,20 @@ const NotificationScreen = () => {
   }, []);
   const renderItem = ({ item, index }) => {
     return (
-      <View
-        style={{
-          flex: 1,
-          flexDirection: "row",
-          height: 100,
-          backgroundColor: COLORS.white,
-          padding: 10,
-          marginTop: 10,
-          elevation: 5,
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.3,
-          shadowRadius: 3,
-        }}
-      >
-        <View style={{ width: "30%", borderRadius: 10 }}>
+      <View style={styles.itemContainer}>
+        <View style={styles.imageContainer}>
           <Image
-            style={{ width: "100%", height: "100%", borderRadius: 10 }}
+            style={styles.notificationImage}
             source={{ uri: `data:image/png;base64,${item.thumbnail}` }}
           />
         </View>
-        <View style={{ width: "70%" }}>
-          <View style={{ width: "100%", alignItems: "center" }}>
+        <View style={styles.notificationInfoContainer}>
+          <View style={styles.timeAndDateContainer}>
             <Text
-              style={{ fontSize: 16, fontWeight: 500 }}
+              style={styles.cameraNameText}
             >{`${item.fromDevice.deviceID} • ${item.fromDevice.cameras[0].cameraName}`}</Text>
 
-            <Text style={{ marginTop: 10 }}>{`${
+            <Text style={styles.timeText}>{`${
               formatDateTime(item.occurredAt).date
             }`}</Text>
             <Text>{`${formatDateTime(item.occurredAt).time}`}</Text>
@@ -67,13 +53,11 @@ const NotificationScreen = () => {
         <Loader />
       ) : (
         <View style={GlobalStyles.container}>
-          <Text style={{ fontSize: 24, fontWeight: "bold", padding: 20 }}>
-            Notifications
-          </Text>
+          <Text style={styles.heading}>Notifications</Text>
           <FlatList
             data={notifications}
             renderItem={renderItem}
-            style={{ flex: 1, width: "100%" }}
+            style={styles.flatList}
           />
         </View>
       )}
@@ -82,3 +66,49 @@ const NotificationScreen = () => {
 };
 
 export default NotificationScreen;
+
+const styles = StyleSheet.create({
+  flatList: {
+    flex: 1,
+    width: "100%",
+  },
+  heading: {
+    fontSize: 24,
+    fontWeight: "bold",
+    padding: 20,
+  },
+  timeText: {
+    marginTop: 10,
+  },
+  cameraNameText: {
+    fontSize: 16,
+    fontWeight: 500,
+  },
+  timeAndDateContainer: {
+    width: "100%",
+    alignItems: "center",
+  },
+  notificationInfoContainer: {
+    width: "70%",
+  },
+  notificationImage: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 10,
+  },
+  imageContainer: {
+    width: "30%",
+    borderRadius: 10,
+  },
+  itemContainer: {
+    flex: 1,
+    flexDirection: "row",
+    height: 100,
+    backgroundColor: COLORS.white,
+    padding: 10,
+    marginTop: 10,
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2, shadowOpacity: 0.3, shadowRadius: 3 },
+  },
+});
