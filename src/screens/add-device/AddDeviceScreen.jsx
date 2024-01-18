@@ -113,14 +113,7 @@ export default function CodeScannerPage({ navigation }) {
     <View style={styles.container}>
       {!cameraPermissionStatus ? (
         <View style={GlobalStyles.container}>
-          <Text
-            style={{
-              padding: 10,
-              fontSize: 16,
-              fontWeight: "800",
-              textAlign: "center",
-            }}
-          >
+          <Text style={styles.permissionRequestText}>
             Please give camera permission for QR Scanner to work.
           </Text>
           <Button
@@ -133,24 +126,11 @@ export default function CodeScannerPage({ navigation }) {
         </View>
       ) : (
         <View style={GlobalStyles.container}>
-          <Text
-            style={{
-              color: COLORS.black,
-              fontSize: 18,
-              marginBottom: 30,
-              fontWeight: 700,
-            }}
-          >
+          <Text style={styles.instructionsText}>
             Scan the QR code of your device.
           </Text>
           {device != null && (
-            <View
-              style={{
-                width: "100%",
-                flex: 0.6,
-                alignSelf: "center",
-              }}
-            >
+            <View style={styles.cameraContainer}>
               <Camera
                 style={StyleSheet.absoluteFill}
                 device={device}
@@ -190,6 +170,23 @@ export default function CodeScannerPage({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  cameraContainer: {
+    width: "100%",
+    flex: 0.6,
+    alignSelf: "center",
+  },
+  instructionsText: {
+    color: COLORS.black,
+    fontSize: 18,
+    marginBottom: 30,
+    fontWeight: 700,
+  },
+  permissionRequestText: {
+    padding: 10,
+    fontSize: 16,
+    fontWeight: "800",
+    textAlign: "center",
+  },
   container: {
     flex: 1,
     backgroundColor: "white",
