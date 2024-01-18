@@ -102,7 +102,10 @@ const Register = ({ navigation }) => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollViewContentContainer}>
+    <ScrollView
+      contentContainerStyle={styles.scrollViewContentContainer}
+      keyboardShouldPersistTaps="handled"
+    >
       <Text h2>Register</Text>
       <View style={styles.inputContainer}>
         <Input

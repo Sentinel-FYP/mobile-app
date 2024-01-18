@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   },
   cameraNameText: {
     fontSize: 16,
-    fontWeight: 500,
+    fontWeight: "500",
   },
   timeAndDateContainer: {
     width: "100%",
