@@ -15,6 +15,7 @@ import { check, request, PERMISSIONS, RESULTS } from "react-native-permissions";
 import { Button } from "@rneui/base";
 import { GlobalStyles } from "../../global/GlobalStyles";
 import { Text } from "@rneui/themed";
+import { COLORS } from "../../constants";
 
 const showCodeAlert = (value, onDismissed) => {
   const buttons = [
@@ -131,16 +132,34 @@ export default function CodeScannerPage({ navigation }) {
           />
         </View>
       ) : (
-        <>
+        <View style={GlobalStyles.container}>
+          <Text
+            style={{
+              color: COLORS.black,
+              fontSize: 18,
+              marginBottom: 30,
+              fontWeight: 700,
+            }}
+          >
+            Scan the QR code of your device.
+          </Text>
           {device != null && (
-            <Camera
-              style={StyleSheet.absoluteFill}
-              device={device}
-              isActive={isActive}
-              codeScanner={codeScanner}
-              torch={torch ? "on" : "off"}
-              enableZoomGesture={true}
-            />
+            <View
+              style={{
+                width: "100%",
+                flex: 0.6,
+                alignSelf: "center",
+              }}
+            >
+              <Camera
+                style={StyleSheet.absoluteFill}
+                device={device}
+                isActive={isActive}
+                codeScanner={codeScanner}
+                torch={torch ? "on" : "off"}
+                enableZoomGesture={true}
+              />
+            </View>
           )}
 
           <View style={styles.rightButtonRow}>
@@ -164,7 +183,7 @@ export default function CodeScannerPage({ navigation }) {
           >
             <IonIcon name="close-outline" color="white" size={35} />
           </PressableOpacity>
-        </>
+        </View>
       )}
     </View>
   );
