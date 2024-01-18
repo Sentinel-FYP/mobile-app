@@ -72,7 +72,7 @@ export default AddCameraScreen;
 const styles = StyleSheet.create({
   heading: {
     fontSize: 24,
-    fontWeight: 500,
+    fontWeight: "500",
   },
   discoveredCameras: {
     paddingTop: 25,
