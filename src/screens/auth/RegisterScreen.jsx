@@ -102,20 +102,9 @@ const Register = ({ navigation }) => {
   };
 
   return (
-    <ScrollView
-      style={{ width: "100%" }}
-      contentContainerStyle={{
-        flexGrow: 1,
-        width: "100%",
-        justifyContent: "center",
-        alignItems: "center",
-        paddingHorizontal: 30,
-      }}
-    >
+    <ScrollView contentContainerStyle={styles.scrollViewContentContainer}>
       <Text h2>Register</Text>
-      <View
-        style={{ width: "100%", alignItems: "center", paddingVertical: 40 }}
-      >
+      <View style={styles.inputContainer}>
         <Input
           label={"First Name"}
           labelStyle={styles.inputLabel}
@@ -155,7 +144,7 @@ const Register = ({ navigation }) => {
           }
           secureTextEntry
         />
-        <View style={{ marginTop: 20 }}>
+        <View style={styles.loaderContainer}>
           {loading ? (
             <Loader />
           ) : (
@@ -163,7 +152,7 @@ const Register = ({ navigation }) => {
               color="primary"
               title={"Register"}
               size="lg"
-              containerStyle={{ width: 200, borderRadius: 5 }}
+              containerStyle={styles.registerButton}
               onPress={handleRegisterPress}
             />
           )}
@@ -171,10 +160,7 @@ const Register = ({ navigation }) => {
       </View>
       <Text style={{ paddingVertical: 10 }}>
         Already have an account?{" "}
-        <Text
-          style={{ color: "blue", fontWeight: "bold" }}
-          onPress={handleLoginPress}
-        >
+        <Text style={styles.loginText} onPress={handleLoginPress}>
           Login
         </Text>
       </Text>
@@ -184,6 +170,29 @@ const Register = ({ navigation }) => {
 
 export default Register;
 const styles = StyleSheet.create({
+  loginText: {
+    color: "blue",
+    fontWeight: "bold",
+  },
+  registerButton: {
+    width: 200,
+    borderRadius: 5,
+  },
+  loaderContainer: {
+    marginTop: 20,
+  },
+  inputContainer: {
+    width: "100%",
+    alignItems: "center",
+    paddingVertical: 40,
+  },
+  scrollViewContentContainer: {
+    flexGrow: 1,
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 30,
+  },
   inputLabel: {
     color: COLORS.black,
   },
