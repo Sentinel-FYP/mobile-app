@@ -1,5 +1,5 @@
 import { View, Text } from "react-native";
-import { useState } from "react";
+import { useEffect, useState, useLayoutEffect } from "react";
 import useStorage from "./useStorage";
 import axios from "axios";
 import { API_BASE_URL } from "../constants";
@@ -7,6 +7,7 @@ import { API_BASE_URL } from "../constants";
 const useBackend = () => {
   const { getAuthToken } = useStorage();
   const [loading, setLoading] = useState(false);
+
   async function getNotificationsFromServer() {
     setLoading(true);
     try {
@@ -32,7 +33,6 @@ const useBackend = () => {
       const response = await axios.get(url, {
         headers: { Authorization: `Bearer ${authToken}` },
       });
-      console.log(JSON.stringify(response.data, null, 2));
       return response.data;
     } catch (error) {
       throw error.response.data;

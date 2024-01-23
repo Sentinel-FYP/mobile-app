@@ -5,11 +5,28 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { COLORS } from "../../constants";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import Socket from "../../socket";
 
 const AddCameraScreen = () => {
+  async function initializeSocket() {
+    try {
+      const socket = await Socket();
+      socket.emit("cameras:discover", { deviceId: "abc" });
+      socket.on("cameras:discovered", (data) => {
+        console.log("data received: ", data);
+      });
+    } catch (error) {
+      console.error("Error while connecting to socket: ", error);
+    }
+  }
+
+  useEffect(() => {
+    initializeSocket();
+  }, []);
+
   const cameras = [
     {
       name: "Camera 6",
