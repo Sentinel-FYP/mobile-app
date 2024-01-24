@@ -5,29 +5,13 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { COLORS } from "../../constants";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import Socket from "../../socket";
+import initializeSocket from "../../socket";
 
 const AddCameraScreen = () => {
-  async function initializeSocket() {
-    try {
-      const socket = await Socket();
-      socket.emit("cameras:discover", { deviceId: "abc" });
-      socket.on("cameras:discovered", (data) => {
-        console.log("data received: ", data);
-      });
-    } catch (error) {
-      console.error("Error while connecting to socket: ", error);
-    }
-  }
-
-  useEffect(() => {
-    initializeSocket();
-  }, []);
-
-  const cameras = [
+  const [cameras, setCameras] = useState([
     {
       name: "Camera 6",
       ipAddress: "192.168.1.2",
@@ -43,7 +27,30 @@ const AddCameraScreen = () => {
       ipAddress: "192.168.1.4",
       online: true,
     },
-  ];
+  ]);
+  async function startSocket() {
+    try {
+      const socket = await initializeSocket();
+      socket.emit("cameras:discover", { deviceId: "abc" });
+      socket.on("cameras:discovered", (data) => {
+        const discoveredCameras = data.cameras.map((camera, index) => {
+          console.log(index);
+          return {
+            name: `Camera ${camera}`,
+            ipAddress: `192.168.1.${index}`,
+            online: true,
+          };
+        });
+        setCameras(discoveredCameras);
+      });
+    } catch (error) {
+      console.error("Error while connecting to socket: ", error);
+    }
+  }
+
+  useEffect(() => {
+    startSocket();
+  }, []);
 
   const renderItem = ({ item, index }) => {
     return (

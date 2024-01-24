@@ -12,6 +12,7 @@ import { COLORS } from "../../constants";
 import useAuth from "../../hooks/useAuth";
 import MoreOptions from "../../components/MoreOptions";
 import useBackend from "../../hooks/useBackend";
+import initializeSocket from "../../socket";
 
 const HomeScreen = ({ navigation }) => {
   const { logout } = useAuth();
@@ -70,9 +71,21 @@ const HomeScreen = ({ navigation }) => {
     },
   ];
 
+  const startSocket = async () => {
+    try {
+      const socket = await initializeSocket();
+      socket.emit("join room", { deviceId: "abc" });
+      console.log("socket initialized");
+    } catch (error) {
+      console.error("Error while connecting to socket: ", error);
+    }
+  };
+
   //use effects
   useEffect(() => {
+    console.log("use effect");
     getDevicesInfo();
+    startSocket();
   }, []);
 
   const renderItem = ({ item, index }) => {
