@@ -17,5 +17,6 @@ export const COLORS = {
 };
 
 //TODO: Move following to env
+// export const SERVER_URL = "http:/127.0.0.1:5500";
 export const SERVER_URL = "http://13.51.86.179:5500";
 export const API_BASE_URL = SERVER_URL + "/api";

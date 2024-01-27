@@ -76,6 +76,10 @@ const HomeScreen = ({ navigation }) => {
       const socket = await initializeSocket();
       socket.emit("join room", { deviceId: "abc" });
       console.log("socket initialized");
+      return () => {
+        console.log("socket off");
+        socket.off("join room");
+      };
     } catch (error) {
       console.error("Error while connecting to socket: ", error);
     }
@@ -98,7 +102,13 @@ const HomeScreen = ({ navigation }) => {
               <View style={styles.camerasWrapper}>
                 {item.cameras.map((camera, index) => {
                   return (
-                    <TouchableOpacity key={index} style={styles.camera}>
+                    <TouchableOpacity
+                      key={index}
+                      style={styles.camera}
+                      onPress={() => {
+                        navigation.navigate("LiveStream");
+                      }}
+                    >
                       <Text>{camera.cameraName}</Text>
                     </TouchableOpacity>
                   );

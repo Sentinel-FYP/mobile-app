@@ -17,16 +17,6 @@ const AddCameraScreen = () => {
       ipAddress: "192.168.1.2",
       online: true,
     },
-    {
-      name: "Camera 7",
-      ipAddress: "192.168.1.3",
-      online: true,
-    },
-    {
-      name: "Camera 8",
-      ipAddress: "192.168.1.4",
-      online: true,
-    },
   ]);
   async function startSocket() {
     try {
@@ -43,6 +33,10 @@ const AddCameraScreen = () => {
         });
         setCameras(discoveredCameras);
       });
+      return () => {
+        console.log("socket off");
+        socket.off("cameras:discovered");
+      };
     } catch (error) {
       console.error("Error while connecting to socket: ", error);
     }
