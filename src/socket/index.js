@@ -5,6 +5,7 @@ import { SERVER_URL } from "../constants";
 let socket = null;
 async function initializeSocket() {
   if (!socket) {
+    console.log("initializing a new socket");
     const { getAuthToken } = useStorage();
     const authToken = await getAuthToken();
     socket = io(`${SERVER_URL}?token=${authToken}`);
@@ -18,6 +19,7 @@ async function initializeSocket() {
       console.log(error);
     });
   }
+  console.log("returning socket");
   return socket;
 }
 

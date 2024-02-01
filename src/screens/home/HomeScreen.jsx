@@ -75,7 +75,12 @@ const HomeScreen = ({ navigation }) => {
     try {
       const socket = await initializeSocket();
       socket.emit("join room", { deviceId: "abc" });
-      console.log("socket initialized");
+      socket.emit("cameras:add", {
+        deviceId: "abc",
+        cameraIP: "192.168.1.7:8554",
+        username: "admin",
+        password: "admin",
+      });
       return () => {
         console.log("socket off");
         socket.off("join room");
@@ -87,7 +92,6 @@ const HomeScreen = ({ navigation }) => {
 
   //use effects
   useEffect(() => {
-    console.log("use effect");
     getDevicesInfo();
     startSocket();
   }, []);
