@@ -43,6 +43,14 @@ const LiveStream = () => {
     });
   };
 
+  const stopStreaming = async () => {
+    socket.off("stream:send");
+    socket.emit("stream:end", {
+      deviceId: "abc",
+      cameraIP: "192.168.1.7:8554",
+    });
+  };
+
   useEffect(() => {
     initializeStreaming();
     return () => {
@@ -61,6 +69,7 @@ const LiveStream = () => {
         style={{ width: "100%", height: 300 }}
       />
       <Button title="Start Streaming" onPress={startStreaming} />
+      <Button title="Stop Streaming" onPress={stopStreaming} />
     </View>
   );
 };
