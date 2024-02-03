@@ -26,8 +26,6 @@ const HomeScreen = ({ navigation }) => {
         { cameraName: "Cam2" },
         { cameraName: "Cam3" },
         { cameraName: "Cam4" },
-        { cameraName: "Cam4" },
-        { cameraName: "Cam4" },
       ],
     },
   ]);
