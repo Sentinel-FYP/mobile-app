@@ -94,7 +94,7 @@ const LiveStream = () => {
   };
 
   const stopStreaming = async () => {
-    pc.close();
+    await pc.close();
     pc = null;
   };
 
@@ -116,7 +116,6 @@ const LiveStream = () => {
       />
 
       <Button title="Start Streaming" onPress={startStreaming} />
-      <Button title="Stop Streaming" onPress={stopStreaming} />
     </View>
   );
 };
