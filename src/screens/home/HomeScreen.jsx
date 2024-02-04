@@ -5,27 +5,39 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { GlobalStyles } from "../../global/GlobalStyles";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { COLORS } from "../../constants";
 import useAuth from "../../hooks/useAuth";
 import MoreOptions from "../../components/MoreOptions";
+import useBackend from "../../hooks/useBackend";
+import initializeSocket from "../../socket";
 
 const HomeScreen = ({ navigation }) => {
   const { logout } = useAuth();
+  const { getEdgeDevices } = useBackend();
   const [moreOptionsVisible, setMoreOptionsVisible] = useState(false);
   const [devices, setDevices] = useState([
     {
       name: "Sentinel Office",
       cameras: [
-        { name: "Cam1" },
-        { name: "Cam2" },
-        { name: "Cam3" },
-        { name: "Cam4" },
+        { cameraName: "Cam1" },
+        { cameraName: "Cam2" },
+        { cameraName: "Cam3" },
+        { cameraName: "Cam4" },
       ],
     },
   ]);
+
+  const getDevicesInfo = async () => {
+    try {
+      const devices = await getEdgeDevices();
+      setDevices(devices);
+    } catch (error) {
+      console.error("Error while getting devices info: ", error);
+    }
+  };
 
   const handleLogoutPress = async () => {
     try {
@@ -57,18 +69,43 @@ const HomeScreen = ({ navigation }) => {
     },
   ];
 
+  const startSocket = async () => {
+    try {
+      const socket = await initializeSocket();
+      socket.emit("join room", { deviceId: "abc" });
+      return () => {
+        console.log("socket off");
+        socket.off("join room");
+      };
+    } catch (error) {
+      console.error("Error while connecting to socket: ", error);
+    }
+  };
+
+  //use effects
+  useEffect(() => {
+    getDevicesInfo();
+    startSocket();
+  }, []);
+
   const renderItem = ({ item, index }) => {
     return (
       <>
         <View style={styles.deviceContainer}>
           <View style={styles.deviceNameConatiner}>
-            <Text style={styles.deviceName}>{item.name}</Text>
+            <Text style={styles.deviceName}>{item.deviceID}</Text>
             <View style={styles.camerasContainer}>
               <View style={styles.camerasWrapper}>
                 {item.cameras.map((camera, index) => {
                   return (
-                    <TouchableOpacity key={camera.name} style={styles.camera}>
-                      <Text>{camera.name}</Text>
+                    <TouchableOpacity
+                      key={index}
+                      style={styles.camera}
+                      onPress={() => {
+                        navigation.navigate("LiveStream");
+                      }}
+                    >
+                      <Text>{camera.cameraName}</Text>
                     </TouchableOpacity>
                   );
                 })}
@@ -146,8 +183,7 @@ const styles = StyleSheet.create({
     width: "100%",
     flexDirection: "row",
     flexWrap: "wrap",
-    alignItems: "center",
-    justifyContent: "center",
+    padding: 5,
   },
   camerasContainer: {
     width: "100%",
@@ -156,7 +192,9 @@ const styles = StyleSheet.create({
   deviceName: {
     fontSize: 18,
     fontWeight: "bold",
-    marginLeft: 5,
+    paddingLeft: 5,
+    borderBottomWidth: 1,
+    borderColor: COLORS.black,
   },
   deviceNameConatiner: {
     width: "100%",

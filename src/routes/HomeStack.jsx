@@ -3,6 +3,7 @@ import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from "../screens/home/HomeScreen";
 import AddCamera from "../screens/add-camera/AddCameraScreen";
+import LiveStream from "../screens/live-stream/LiveStream";
 
 const HomeStack = createNativeStackNavigator();
 
@@ -22,6 +23,11 @@ const HomeStackScreen = () => {
         name="AddCamera"
         component={AddCamera}
         options={{ title: "Add Camera" }}
+      />
+      <HomeStack.Screen
+        name="LiveStream"
+        component={LiveStream}
+        options={{ title: "Gate 4" }}
       />
     </HomeStack.Navigator>
   );
