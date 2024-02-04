@@ -8,7 +8,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { COLORS } from "../../constants";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import initializeSocket from "../../socket";
+import getSocket from "../../socket";
 
 const AddCameraScreen = () => {
   const [cameras, setCameras] = useState([
@@ -20,7 +20,7 @@ const AddCameraScreen = () => {
   ]);
   async function startSocket() {
     try {
-      const socket = await initializeSocket();
+      const socket = await getSocket();
       socket.emit("cameras:discover", { deviceId: "abc" });
       socket.on("cameras:discovered", (data) => {
         const discoveredCameras = data.cameras.map((camera, index) => {

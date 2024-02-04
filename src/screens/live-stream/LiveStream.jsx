@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { View, Image, Button, Text } from "react-native";
-import initializeSocket from "../../socket";
+import getSocket from "../../socket";
 import { decode as atob, encode as btoa } from "base-64";
 import { RTCPeerConnection, RTCView } from "react-native-webrtc";
 import { DEVICE_ID, CAMERA_NAME } from "../../constants";
@@ -11,7 +11,7 @@ const LiveStream = () => {
 
   const initializeStreaming = async () => {
     try {
-      socket = await initializeSocket();
+      socket = await getSocket();
       socket.on("webrtc:answer", (answer) => {
         console.log("received answer", answer);
         pc.setRemoteDescription(answer);
