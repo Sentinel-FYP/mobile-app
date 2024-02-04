@@ -1,24 +1,29 @@
-import React, { useState, useEffect, useRef } from "react";
-import { View, Image, Button, Text } from "react-native";
-import getSocket from "../../socket";
-import { decode as atob, encode as btoa } from "base-64";
-import { RTCPeerConnection, RTCView } from "react-native-webrtc";
-import { DEVICE_ID, CAMERA_NAME } from "../../constants";
+import { View, Text, TouchableOpacity } from "react-native";
+import { RTCView } from "react-native-webrtc";
 import useWebRTC from "../../hooks/useWebRTC";
+import { GlobalStyles } from "../../global/GlobalStyles";
+import { Button } from "@rneui/themed";
 
 const LiveStream = () => {
   const { remoteStream, startStreaming, stopStreaming } = useWebRTC();
   return (
-    <View>
-      <Text>React Native WebRTC Example</Text>
-
-      <RTCView
-        objectFit="cover"
-        streamURL={remoteStream ? remoteStream.toURL() : ""}
-        style={{ width: "100%", minHeight: 300 }}
-      />
-
-      <Button title="Start Streaming" onPress={startStreaming} />
+    <View style={{ flex: 1 }}>
+      <Text style={{ padding: 10, fontSize: 20, fontWeight: 500 }}>
+        React Native WebRTC Example
+      </Text>
+      <View style={GlobalStyles.container}>
+        <RTCView
+          objectFit="cover"
+          streamURL={remoteStream ? remoteStream.toURL() : ""}
+          style={{ width: "100%", height: "80%" }}
+        />
+        <Button
+          title="Start Streaming"
+          onPress={startStreaming}
+          containerStyle={{ margin: 10 }}
+          radius={"sm"}
+        />
+      </View>
     </View>
   );
 };
