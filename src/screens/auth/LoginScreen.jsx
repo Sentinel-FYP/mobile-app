@@ -47,6 +47,7 @@ const Login = ({ navigation }) => {
     <ScrollView
       style={{ width: "100%" }}
       contentContainerStyle={styles.scrollViewContentContainer}
+      keyboardShouldPersistTaps="handled"
     >
       <Text h2>Login</Text>
       <View style={styles.inputContainer}>

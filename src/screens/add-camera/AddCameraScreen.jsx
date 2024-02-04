@@ -5,28 +5,46 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { COLORS } from "../../constants";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import getSocket from "../../socket";
 
 const AddCameraScreen = () => {
-  const cameras = [
+  const [cameras, setCameras] = useState([
     {
       name: "Camera 6",
       ipAddress: "192.168.1.2",
       online: true,
     },
-    {
-      name: "Camera 7",
-      ipAddress: "192.168.1.3",
-      online: true,
-    },
-    {
-      name: "Camera 8",
-      ipAddress: "192.168.1.4",
-      online: true,
-    },
-  ];
+  ]);
+  async function startSocket() {
+    try {
+      const socket = await getSocket();
+      socket.emit("cameras:discover", { deviceId: "abc" });
+      socket.on("cameras:discovered", (data) => {
+        const discoveredCameras = data.cameras.map((camera, index) => {
+          console.log(index);
+          return {
+            name: `Camera ${camera}`,
+            ipAddress: `192.168.1.${index}`,
+            online: true,
+          };
+        });
+        setCameras(discoveredCameras);
+      });
+      return () => {
+        console.log("socket off");
+        socket.off("cameras:discovered");
+      };
+    } catch (error) {
+      console.error("Error while connecting to socket: ", error);
+    }
+  }
+
+  useEffect(() => {
+    startSocket();
+  }, []);
 
   const renderItem = ({ item, index }) => {
     return (
