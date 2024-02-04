@@ -16,6 +16,25 @@ export const COLORS = {
   lightGray: "#D3D3D3",
 };
 
+export const ICE_SERVERS = [
+  { urls: ["stun:stun.l.google.com:19302"] },
+  {
+    url: "turn:13.51.86.179:3478",
+    username: "admin",
+    credential: "admin",
+  },
+  {
+    url: "turn:13.51.86.179:3478?transport=udp",
+    username: "admin",
+    credential: "admin",
+  },
+  {
+    url: "turn:13.51.86.179:3478?transport=tcp",
+    username: "admin",
+    credential: "admin",
+  },
+];
+
 //TODO: Move following to env
 // export const SERVER_URL = "http://192.168.1.3:5500";
 export const SERVER_URL = "http://13.51.86.179:5500";
