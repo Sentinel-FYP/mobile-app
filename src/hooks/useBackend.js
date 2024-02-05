@@ -11,8 +11,8 @@ const useBackend = () => {
   async function getNotificationsFromServer() {
     setLoading(true);
     try {
-      const deviceId = "6558f04547674cc283de271b";
-      const url = `${API_BASE_URL}/anomalyLog/${deviceId}`;
+      const deviceID = "6558f04547674cc283de271b";
+      const url = `${API_BASE_URL}/anomalyLog/${deviceID}`;
       const authToken = await getAuthToken();
       const response = await axios.get(url, {
         headers: { Authorization: `Bearer ${authToken}` },

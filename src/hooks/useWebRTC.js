@@ -92,7 +92,7 @@ const useWebRTC = () => {
       socket.emit("webrtc:offer", {
         sdp: peerConnection.localDescription.sdp,
         type: peerConnection.localDescription.type,
-        deviceId: DEVICE_ID,
+        deviceID: DEVICE_ID,
         cameraName: CAMERA_NAME,
       });
     } catch (error) {

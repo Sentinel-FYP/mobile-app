@@ -8,7 +8,7 @@ import {
 import { useEffect, useState } from "react";
 import { GlobalStyles } from "../../global/GlobalStyles";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { COLORS } from "../../constants";
+import { COLORS, DEVICE_ID } from "../../constants";
 import useAuth from "../../hooks/useAuth";
 import MoreOptions from "../../components/MoreOptions";
 import useBackend from "../../hooks/useBackend";
@@ -72,7 +72,7 @@ const HomeScreen = ({ navigation }) => {
   const startSocket = async () => {
     try {
       const socket = await initializeSocket();
-      socket.emit("join room", { deviceId: "abc" });
+      socket.emit("join room", { deviceID: DEVICE_ID });
       return () => {
         console.log("socket off");
         socket.off("join room");
