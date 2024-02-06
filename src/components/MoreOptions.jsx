@@ -1,7 +1,8 @@
 import { View, Text, TouchableOpacity, FlatList } from "react-native";
-import React from "react";
+import { memo } from "react";
 import { COLORS } from "../constants";
-const MoreOptions = ({ moreOptions }) => {
+
+const MoreOptions = memo(({ moreOptions }) => {
   console.log(moreOptions);
   const renderItem = ({ item, index }) => {
     console.log(item);
@@ -38,6 +39,6 @@ const MoreOptions = ({ moreOptions }) => {
       <FlatList data={moreOptions} renderItem={renderItem} />
     </View>
   );
-};
+});
 
 export default MoreOptions;

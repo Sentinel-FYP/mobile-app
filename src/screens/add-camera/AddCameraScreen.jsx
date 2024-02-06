@@ -9,8 +9,13 @@ import React, { useEffect, useState } from "react";
 import { COLORS, DEVICE_ID } from "../../constants";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import getSocket from "../../socket";
+import { Button } from "@rneui/themed";
+import AddCamera from "../../components/AddCamera";
 
-const AddCameraScreen = () => {
+let socket = null;
+const AddCameraScreen = ({ route }) => {
+  const { deviceID } = route.params;
+  const [addCameraModalVisible, setAddCameraModalVisible] = useState(false);
   const [cameras, setCameras] = useState([
     {
       name: "Camera 6",
@@ -18,25 +23,82 @@ const AddCameraScreen = () => {
       online: true,
     },
   ]);
+
+  const [newCameraName, setNewCameraName] = useState({
+    value: "",
+    error: "",
+  });
+  const [newIpAddress, setNewIpAddress] = useState({ value: "", error: "" });
+  const [newUsername, setNewUsername] = useState({ value: "", error: "" });
+  const [newPassword, setNewPassword] = useState({ value: "", error: "" });
+
+  const setCameraName = (value) => {
+    setNewCameraName({ ...newCameraName, value });
+  };
+  const setIpAddress = (value) => {
+    setNewIpAddress({ ...newIpAddress, value });
+  };
+  const setUsername = (value) => {
+    setNewUsername({ ...newUsername, value });
+  };
+  const setPassword = (value) => {
+    setNewPassword({ ...newPassword, value });
+  };
+
+  const inputValidation = () => {
+    let isValid = true;
+    if (newCameraName.value === "") {
+      setNewCameraName({ ...newCameraName, error: "Camera name is required" });
+      isValid = false;
+    }
+    if (newIpAddress.value === "") {
+      setNewIpAddress({ ...newIpAddress, error: "IP Address is required" });
+      isValid = false;
+    }
+    return isValid;
+  };
+
+  const onAddCameraPress = () => {
+    if (!inputValidation()) {
+      return;
+    }
+
+    console.log("Adding camera: ", newCameraName.value, newIpAddress.value);
+
+    socket.emit("cameras:add", {
+      deviceID: deviceID,
+      cameraName: newCameraName.value,
+      ipAddress: newIpAddress.value,
+      username: newUsername.value,
+      password: newPassword.value,
+    });
+  };
+
+  const onAddCameraModalClose = () => {
+    setNewCameraName({ value: "", error: "" });
+    setNewIpAddress({ value: "", error: "" });
+    setAddCameraModalVisible(false);
+  };
+
+  const onAddManuallyPress = () => {
+    setAddCameraModalVisible(true);
+  };
+
+  const onCameraDiscovered = (data) => {
+    const newCamIp = data.camera;
+    const newCam = {
+      name: `Camera ${discoveredCameras.length + 1}`,
+      ipAddress: newCamIp,
+      online: true,
+    };
+    setCameras([...discoveredCameras, data.camera]);
+  };
+
   async function startSocket() {
     try {
-      const socket = await getSocket();
-      socket.emit("cameras:discover", { deviceID: DEVICE_ID });
-      socket.on("cameras:discovered", (data) => {
-        const discoveredCameras = data.cameras.map((camera, index) => {
-          console.log(index);
-          return {
-            name: `Camera ${camera}`,
-            ipAddress: `192.168.1.${index}`,
-            online: true,
-          };
-        });
-        setCameras(discoveredCameras);
-      });
-      return () => {
-        console.log("socket off");
-        socket.off("cameras:discovered");
-      };
+      socket = await getSocket();
+      socket.on("cameras:discovered:new", onCameraDiscovered);
+      socket.emit("cameras:discover", { deviceID: deviceID });
     } catch (error) {
       console.error("Error while connecting to socket: ", error);
     }
@@ -44,9 +106,21 @@ const AddCameraScreen = () => {
 
   useEffect(() => {
     startSocket();
+    return () => {
+      if (socket) {
+        console.log("socket off");
+        socket.off("cameras:discovered");
+      }
+    };
   }, []);
 
   const renderItem = ({ item, index }) => {
+    const onDiscoveredCameraAddPress = () => {
+      setCameraName(item.name);
+      setIpAddress(item.ipAddress);
+      setAddCameraModalVisible(true);
+    };
+
     return (
       <View style={styles.itemContainer}>
         <View style={styles.cameraInfoContainer}>
@@ -68,7 +142,10 @@ const AddCameraScreen = () => {
           <TouchableOpacity style={styles.actionIconContainer}>
             <Icon size={26} color={COLORS.danger} name="delete" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.actionIconContainer}>
+          <TouchableOpacity
+            style={styles.actionIconContainer}
+            onPress={onDiscoveredCameraAddPress}
+          >
             <Icon size={26} color={COLORS.black} name="plus" />
           </TouchableOpacity>
         </View>
@@ -81,6 +158,33 @@ const AddCameraScreen = () => {
         <Text style={styles.heading}>Discovered Cameras</Text>
         <FlatList data={cameras} renderItem={renderItem} />
       </View>
+      <View
+        style={{
+          flex: 0.2,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Button
+          title={"Add Manually"}
+          containerStyle={{ width: "80%" }}
+          radius={"md"}
+          onPress={onAddManuallyPress}
+        />
+      </View>
+      <AddCamera
+        visible={addCameraModalVisible}
+        cameraName={newCameraName}
+        ipAddress={newIpAddress}
+        username={newUsername}
+        password={newPassword}
+        onClose={onAddCameraModalClose}
+        onCameraNameChange={setCameraName}
+        onIpAddressChange={setIpAddress}
+        onUsernameChange={setUsername}
+        onPasswordChange={setPassword}
+        onAddCameraPress={onAddCameraPress}
+      />
     </View>
   );
 };
@@ -95,6 +199,7 @@ const styles = StyleSheet.create({
   discoveredCameras: {
     paddingTop: 25,
     paddingHorizontal: 10,
+    flex: 0.9,
   },
   container: {
     flex: 1,

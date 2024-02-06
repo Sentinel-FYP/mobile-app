@@ -56,7 +56,7 @@ const HomeScreen = ({ navigation }) => {
       option: "Add New Camera",
       onPress: () => {
         console.log("add new camrea pressed");
-        navigation.navigate("AddCamera");
+        navigation.navigate("AddCamera", { deviceID: DEVICE_ID });
         closeMoreOptions();
       },
     },
@@ -97,12 +97,16 @@ const HomeScreen = ({ navigation }) => {
             <View style={styles.camerasContainer}>
               <View style={styles.camerasWrapper}>
                 {item.cameras.map((camera, index) => {
+                  if (index > 3) return null;
                   return (
                     <TouchableOpacity
                       key={index}
                       style={styles.camera}
                       onPress={() => {
-                        navigation.navigate("LiveStream");
+                        navigation.navigate("LiveStream", {
+                          deviceID: item.deviceID,
+                          cameraName: camera.cameraName,
+                        });
                       }}
                     >
                       <Text>{camera.cameraName}</Text>
@@ -183,7 +187,6 @@ const styles = StyleSheet.create({
     width: "100%",
     flexDirection: "row",
     flexWrap: "wrap",
-    padding: 5,
   },
   camerasContainer: {
     width: "100%",
