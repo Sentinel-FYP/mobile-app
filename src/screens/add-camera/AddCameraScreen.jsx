@@ -16,13 +16,7 @@ let socket = null;
 const AddCameraScreen = ({ route }) => {
   const { deviceID } = route.params;
   const [addCameraModalVisible, setAddCameraModalVisible] = useState(false);
-  const [cameras, setCameras] = useState([
-    {
-      name: "Camera 6",
-      ipAddress: "192.168.1.2",
-      online: true,
-    },
-  ]);
+  const [cameras, setCameras] = useState([]);
 
   const [newCameraName, setNewCameraName] = useState({
     value: "",
@@ -68,7 +62,7 @@ const AddCameraScreen = ({ route }) => {
     socket.emit("cameras:add", {
       deviceID: deviceID,
       cameraName: newCameraName.value,
-      ipAddress: newIpAddress.value,
+      cameraIP: newIpAddress.value,
       username: newUsername.value,
       password: newPassword.value,
     });
@@ -84,20 +78,36 @@ const AddCameraScreen = ({ route }) => {
     setAddCameraModalVisible(true);
   };
 
-  const onCameraDiscovered = (data) => {
+  const onNewCameraDiscovered = (data) => {
+    console.log("Camera discovered: ", data);
     const newCamIp = data.camera;
-    const newCam = {
-      name: `Camera ${discoveredCameras.length + 1}`,
-      ipAddress: newCamIp,
-      online: true,
-    };
-    setCameras([...discoveredCameras, data.camera]);
+    setCameras((prev) => {
+      const newCam = {
+        name: `Camera ${prev.length + 1}`,
+        ipAddress: newCamIp,
+        online: true,
+      };
+      return [...prev, newCam];
+    });
+  };
+
+  //TODO: implement this function once the events are clear on postman
+  const onGetDiscoveredCameras = (data) => {
+    console.log("Discovered Cameras: ", data);
+    setCameras((prev) => {
+      const newCameras = data.map((cam, i) => ({
+        name: `Camera ${i + 1}`,
+        ipAddress: cam,
+        online: true,
+      }));
+      return [...prev, ...newCameras];
+    });
   };
 
   async function startSocket() {
     try {
       socket = await getSocket();
-      socket.on("cameras:discovered:new", onCameraDiscovered);
+      socket.on("camera:discovered:new", onNewCameraDiscovered);
       socket.emit("cameras:discover", { deviceID: deviceID });
     } catch (error) {
       console.error("Error while connecting to socket: ", error);
@@ -109,7 +119,7 @@ const AddCameraScreen = ({ route }) => {
     return () => {
       if (socket) {
         console.log("socket off");
-        socket.off("cameras:discovered");
+        socket.off("camera:discovered:new");
       }
     };
   }, []);
@@ -119,6 +129,13 @@ const AddCameraScreen = ({ route }) => {
       setCameraName(item.name);
       setIpAddress(item.ipAddress);
       setAddCameraModalVisible(true);
+    };
+
+    const onDiscoveredCameraDeletePress = () => {
+      setCameras((prev) => {
+        const newCameras = prev.filter((cam, i) => i !== index);
+        return newCameras;
+      });
     };
 
     return (
@@ -139,7 +156,10 @@ const AddCameraScreen = ({ route }) => {
           </View>
         </View>
         <View style={styles.actionsContainer}>
-          <TouchableOpacity style={styles.actionIconContainer}>
+          <TouchableOpacity
+            style={styles.actionIconContainer}
+            onPress={onDiscoveredCameraDeletePress}
+          >
             <Icon size={26} color={COLORS.danger} name="delete" />
           </TouchableOpacity>
           <TouchableOpacity

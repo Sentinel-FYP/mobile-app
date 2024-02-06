@@ -26,7 +26,7 @@ const AddCamera = ({
     <Modal {...props}>
       <ScrollView
         contentContainerStyle={styles.container}
-        keyboardShouldPersistTaps
+        keyboardShouldPersistTaps="always"
       >
         <View
           style={{
@@ -76,7 +76,7 @@ const AddCamera = ({
           secureTextEntry
           errorMessage={password.error}
         />
-        <Text>
+        <Text style={{ width: "100%", padding: 10 }}>
           Note: If your camera do not have a username and password leave those
           fields empty.
         </Text>

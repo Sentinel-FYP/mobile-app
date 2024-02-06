@@ -14,6 +14,7 @@ import MoreOptions from "../../components/MoreOptions";
 import useBackend from "../../hooks/useBackend";
 import initializeSocket from "../../socket";
 
+let socket = null;
 const HomeScreen = ({ navigation }) => {
   const { logout } = useAuth();
   const { getEdgeDevices } = useBackend();
@@ -21,12 +22,7 @@ const HomeScreen = ({ navigation }) => {
   const [devices, setDevices] = useState([
     {
       name: "Sentinel Office",
-      cameras: [
-        { cameraName: "Cam1" },
-        { cameraName: "Cam2" },
-        { cameraName: "Cam3" },
-        { cameraName: "Cam4" },
-      ],
+      cameras: [{ cameraName: "Cam1" }],
     },
   ]);
 
@@ -71,12 +67,8 @@ const HomeScreen = ({ navigation }) => {
 
   const startSocket = async () => {
     try {
-      const socket = await initializeSocket();
-      socket.emit("join room", { deviceID: DEVICE_ID });
-      return () => {
-        console.log("socket off");
-        socket.off("join room");
-      };
+      socket = await initializeSocket();
+      socket.emit("room:join", { deviceID: DEVICE_ID });
     } catch (error) {
       console.error("Error while connecting to socket: ", error);
     }
@@ -86,6 +78,13 @@ const HomeScreen = ({ navigation }) => {
   useEffect(() => {
     getDevicesInfo();
     startSocket();
+
+    return () => {
+      if (socket) {
+        console.log("socket off");
+        socket.off("room:join");
+      }
+    };
   }, []);
 
   const renderItem = ({ item, index }) => {
