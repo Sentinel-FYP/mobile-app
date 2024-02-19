@@ -95,20 +95,33 @@ const AddCameraScreen = ({ route }) => {
   const onGetDiscoveredCameras = (data) => {
     console.log("Discovered Cameras: ", data);
     setCameras((prev) => {
-      const newCameras = data.map((cam, i) => ({
+      let newCameras = data.cameras.map((cam, i) => ({
         name: `Camera ${i + 1}`,
         ipAddress: cam,
         online: true,
       }));
-      return [...prev, ...newCameras];
+      newCameras = newCameras.filter((cam) => {
+        return cam.ipAddress != "\n";
+      });
+      return newCameras;
     });
+  };
+
+  const onDiscoverNetworkPress = () => {
+    socket.emit("cameras:discover", { deviceID: deviceID });
+  };
+
+  const onCameraAdded = (data) => {
+    console.log("Camera added: ", data);
   };
 
   async function startSocket() {
     try {
       socket = await getSocket();
-      socket.on("camera:discovered:new", onNewCameraDiscovered);
-      socket.emit("cameras:discover", { deviceID: deviceID });
+      socket.on("cameras:discovered:new", onNewCameraDiscovered);
+      socket.on("cameras:discovered", onGetDiscoveredCameras);
+      socket.on("cameras:added", onCameraAdded);
+      socket.emit("cameras:discovered:get", { deviceID: deviceID });
     } catch (error) {
       console.error("Error while connecting to socket: ", error);
     }
@@ -186,8 +199,14 @@ const AddCameraScreen = ({ route }) => {
         }}
       >
         <Button
+          title={"Discover Network"}
+          containerStyle={{ width: "80%", marginVertical: 10 }}
+          radius={"md"}
+          onPress={onDiscoverNetworkPress}
+        />
+        <Button
           title={"Add Manually"}
-          containerStyle={{ width: "80%" }}
+          containerStyle={{ width: "80%", marginVertical: 10 }}
           radius={"md"}
           onPress={onAddManuallyPress}
         />
