@@ -4,8 +4,9 @@ import {
   FlatList,
   TouchableOpacity,
   StyleSheet,
+  Image,
 } from "react-native";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { GlobalStyles } from "../../global/GlobalStyles";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { COLORS, DEVICE_ID } from "../../constants";
@@ -13,6 +14,7 @@ import useAuth from "../../hooks/useAuth";
 import MoreOptions from "../../components/MoreOptions";
 import useBackend from "../../hooks/useBackend";
 import initializeSocket from "../../socket";
+import { useFocusEffect } from "@react-navigation/native";
 
 let socket = null;
 const HomeScreen = ({ navigation }) => {
@@ -22,13 +24,14 @@ const HomeScreen = ({ navigation }) => {
   const [devices, setDevices] = useState([
     {
       name: "Sentinel Office",
-      cameras: [{ cameraName: "Cam1" }],
+      cameras: [{ cameraName: "Cam1", thumbnail: "asdf" }],
     },
   ]);
 
   const getDevicesInfo = async () => {
     try {
       const devices = await getEdgeDevices();
+      console.log(devices);
       setDevices(devices);
     } catch (error) {
       console.error("Error while getting devices info: ", error);
@@ -87,6 +90,12 @@ const HomeScreen = ({ navigation }) => {
     };
   }, []);
 
+  useFocusEffect(
+    useCallback(() => {
+      getDevicesInfo();
+    }, [])
+  );
+
   const renderItem = ({ item, index }) => {
     return (
       <>
@@ -108,7 +117,20 @@ const HomeScreen = ({ navigation }) => {
                         });
                       }}
                     >
-                      <Text>{camera.cameraName}</Text>
+                      <View style={{ flex: 1, width: "100%" }}>
+                        <Image
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            resizeMode: "cover",
+                          }}
+                          source={{
+                            uri: `data:image/jpeg;base64,${camera.thumbnail}`,
+                          }}
+                        />
+                      </View>
+
+                      {/* <Text>{camera.cameraName}</Text> */}
                     </TouchableOpacity>
                   );
                 })}

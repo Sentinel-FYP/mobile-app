@@ -11,10 +11,12 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import getSocket from "../../socket";
 import { Button } from "@rneui/themed";
 import AddCamera from "../../components/AddCamera";
+import { useNavigation } from "@react-navigation/native";
 
 let socket = null;
 const AddCameraScreen = ({ route }) => {
   const { deviceID } = route.params;
+  const navigation = useNavigation();
   const [addCameraModalVisible, setAddCameraModalVisible] = useState(false);
   const [cameras, setCameras] = useState([]);
 
@@ -113,6 +115,8 @@ const AddCameraScreen = ({ route }) => {
 
   const onCameraAdded = (data) => {
     console.log("Camera added: ", data);
+    setAddCameraModalVisible(false);
+    navigation.navigate("HomeScreen");
   };
 
   async function startSocket() {
