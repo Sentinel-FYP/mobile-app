@@ -12,6 +12,7 @@ const AuthStackScreen = () => {
       screenOptions={{
         title: "Welcome to Sentinel",
         animation: "slide_from_right",
+        contentStyle: { backgroundColor: COLORS.appBackground },
       }}
     >
       <AuthStack.Screen

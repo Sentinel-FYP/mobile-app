@@ -12,12 +12,14 @@ const HomeStackScreen = () => {
     <HomeStack.Navigator
       screenOptions={{
         animation: "slide_from_right",
+        headerTitleAlign: "center",
+        contentStyle: { backgroundColor: "#FFFFFF" },
       }}
     >
       <HomeStack.Screen
         name="HomeScreen"
         component={HomeScreen}
-        options={{ headerShown: false }}
+        options={{ title: "Home" }}
       />
       <HomeStack.Screen
         name="AddCamera"

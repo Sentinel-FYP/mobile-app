@@ -32,6 +32,7 @@ const TabNavigation = () => {
         tabBarActiveTintColor: COLORS.primaryColor,
         tabBarInactiveTintColor: lightColors.grey3,
         headerShown: false,
+        contentStyle: { backgroundColor: COLORS.appBackground },
       })}
     >
       <Tab.Screen name="Home" component={HomeStackScreen} />

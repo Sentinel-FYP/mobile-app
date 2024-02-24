@@ -14,6 +14,7 @@ export const COLORS = {
   darkGray: "#5A5A5A",
   gray: "#808080",
   lightGray: "#D3D3D3",
+  appBackground: "#FFFFFF",
 };
 
 export const ICE_SERVERS = [

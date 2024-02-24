@@ -10,6 +10,7 @@ const AddDeviceStackScreen = () => {
       screenOptions={{
         animation: "slide_from_right",
         headerShown: false,
+        contentStyle: { backgroundColor: COLORS.appBackground },
       }}
     >
       <AddDeviceStack.Screen

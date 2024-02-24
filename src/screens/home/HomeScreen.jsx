@@ -15,6 +15,7 @@ import MoreOptions from "../../components/MoreOptions";
 import useBackend from "../../hooks/useBackend";
 import initializeSocket from "../../socket";
 import { useFocusEffect } from "@react-navigation/native";
+import { color } from "@rneui/base";
 
 let socket = null;
 const HomeScreen = ({ navigation }) => {
@@ -54,7 +55,6 @@ const HomeScreen = ({ navigation }) => {
     {
       option: "Add New Camera",
       onPress: () => {
-        console.log("add new camrea pressed");
         navigation.navigate("AddCamera", { deviceID: DEVICE_ID });
         closeMoreOptions();
       },
@@ -62,7 +62,6 @@ const HomeScreen = ({ navigation }) => {
     {
       option: "Show Device Info",
       onPress: () => {
-        console.log("show deive info pressed");
         closeMoreOptions();
       },
     },
@@ -100,6 +99,8 @@ const HomeScreen = ({ navigation }) => {
     return (
       <>
         <View style={styles.deviceContainer}>
+          <Text style={{ color: COLORS.gray }}>Hi Hammad!</Text>
+          <Text style={{ fontWeight: "700" }}>Here are your devices</Text>
           <View style={styles.deviceNameConatiner}>
             <Text style={styles.deviceName}>{item.deviceID}</Text>
             <View style={styles.camerasContainer}>
@@ -225,6 +226,7 @@ const styles = StyleSheet.create({
     height: 300,
     borderWidth: 1,
     borderColor: COLORS.black,
+    backgroundColor: "red",
   },
   deviceContainer: {
     width: "100%",
