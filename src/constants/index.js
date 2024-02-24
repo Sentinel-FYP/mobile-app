@@ -1,6 +1,6 @@
 export const COLORS = {
   // focusedIcon: '#F6DE84',
-  primaryColor: "#02776B",
+  primaryColor: "#477ED0",
   unfocusedIcon: "#6C6C6C",
   focusedLabel: "#FFFFFF",
   unfocusedLabel: "#6C6C6C",
@@ -11,6 +11,8 @@ export const COLORS = {
   white: "#ffffff",
   black: "#000000",
   danger: "#ff0e0e",
+  success: "#388E3C",
+  error: "#D32F2F",
   darkGray: "#5A5A5A",
   gray: "#808080",
   lightGray: "#D3D3D3",

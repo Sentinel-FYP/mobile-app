@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from "../screens/home/HomeScreen";
 import AddCamera from "../screens/add-camera/AddCameraScreen";
 import LiveStream from "../screens/live-stream/LiveStream";
+import { COLORS } from "../constants";
 
 const HomeStack = createNativeStackNavigator();
 
@@ -13,7 +14,7 @@ const HomeStackScreen = () => {
       screenOptions={{
         animation: "slide_from_right",
         headerTitleAlign: "center",
-        contentStyle: { backgroundColor: "#FFFFFF" },
+        contentStyle: { backgroundColor: COLORS.appBackground },
       }}
     >
       <HomeStack.Screen
