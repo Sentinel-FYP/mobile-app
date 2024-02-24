@@ -15,7 +15,7 @@ const LiveStream = ({ route }) => {
       <Text style={{ padding: 10, fontSize: 20, fontWeight: 500 }}>
         React Native WebRTC Example
       </Text>
-      <View style={GlobalStyles.container}>
+      <View style={GlobalStyles.centeredContainer}>
         <RTCView
           objectFit="cover"
           streamURL={remoteStream ? remoteStream.toURL() : ""}

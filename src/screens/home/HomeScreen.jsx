@@ -99,9 +99,7 @@ const HomeScreen = ({ navigation }) => {
     return (
       <>
         <View style={styles.deviceContainer}>
-          <Text style={{ color: COLORS.gray }}>Hi Hammad!</Text>
-          <Text style={{ fontWeight: "700" }}>Here are your devices</Text>
-          <View style={styles.deviceNameConatiner}>
+          {/* <View style={styles.deviceNameConatiner}>
             <Text style={styles.deviceName}>{item.deviceID}</Text>
             <View style={styles.camerasContainer}>
               <View style={styles.camerasWrapper}>
@@ -131,7 +129,7 @@ const HomeScreen = ({ navigation }) => {
                         />
                       </View>
 
-                      {/* <Text>{camera.cameraName}</Text> */}
+                     
                     </TouchableOpacity>
                   );
                 })}
@@ -158,17 +156,24 @@ const HomeScreen = ({ navigation }) => {
                 </TouchableOpacity>
               </View>
             </View>
-          </View>
+          </View> */}
         </View>
       </>
     );
   };
 
   return (
-    <View style={GlobalStyles.container}>
-      <Text style={styles.logoutBtn} onPress={handleLogoutPress}>
+    <View style={GlobalStyles.leftAlignContainer}>
+      {/* <Text style={styles.logoutBtn} onPress={handleLogoutPress}>
         Logout
+      </Text> */}
+      <Text style={{ color: COLORS.gray, fontSize: 16 }}>Hi Hammad!</Text>
+      <Text style={{ fontWeight: "700", fontSize: 15 }}>
+        Here are your devices
       </Text>
+      <View style={{ height: 100, width: "100%", backgroundColor: "red" }}>
+        <FlatList />
+      </View>
       <FlatList
         style={{ flex: 1, width: "100%" }}
         data={devices}

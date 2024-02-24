@@ -125,7 +125,7 @@ export default function CodeScannerPage({ navigation }) {
           />
         </View>
       ) : (
-        <View style={GlobalStyles.container}>
+        <View style={GlobalStyles.centeredContainer}>
           <Text style={styles.instructionsText}>
             Scan the QR code of your device.
           </Text>

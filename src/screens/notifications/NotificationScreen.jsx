@@ -48,11 +48,11 @@ const NotificationScreen = () => {
     );
   };
   return (
-    <View style={GlobalStyles.container}>
+    <View style={GlobalStyles.centeredContainer}>
       {notifications.length == 0 ? (
         <Loader />
       ) : (
-        <View style={GlobalStyles.container}>
+        <View style={GlobalStyles.centeredContainer}>
           <Text style={styles.heading}>Notifications</Text>
           <FlatList
             data={notifications}
