@@ -198,13 +198,19 @@ const HomeScreen = ({ navigation }) => {
 
   const Camera = ({ item }) => {
     return (
-      <View
+      <TouchableOpacity
         style={{
           width: "100%",
           marginVertical: 10,
           backgroundColor: "rgba(0,0,0,0.5)",
           aspectRatio: 9 / 6,
-          borderRadius: 5,
+          borderRadius: 10,
+        }}
+        onPress={() => {
+          navigation.navigate("LiveStream", {
+            deviceID: selectedDevice.deviceID,
+            cameraName: item.cameraName,
+          });
         }}
       >
         <View
@@ -248,13 +254,13 @@ const HomeScreen = ({ navigation }) => {
             width: "100%",
             height: "100%",
             resizeMode: "stretch",
-            borderRadius: 5,
+            borderRadius: 10,
           }}
           source={{
             uri: `data:image/jpeg;base64,${item?.thumbnail}`,
           }}
         />
-      </View>
+      </TouchableOpacity>
     );
   };
 
@@ -297,6 +303,7 @@ const HomeScreen = ({ navigation }) => {
           contentContainerStyle={{
             justifyContent: "center",
           }}
+          showsVerticalScrollIndicator={false}
         />
       </View>
     </View>
