@@ -15,33 +15,21 @@ import useBackend from "../../hooks/useBackend";
 import initializeSocket from "../../socket";
 import { useFocusEffect } from "@react-navigation/native";
 import { Icon, color, lightColors } from "@rneui/base";
+import DeviceCard from "../../components/DeviceCard";
 
 let socket = null;
 const HomeScreen = ({ navigation }) => {
   const { logout } = useAuth();
   const { getEdgeDevices } = useBackend();
   const [moreOptionsVisible, setMoreOptionsVisible] = useState(false);
-  const [devices, setDevices] = useState([
-    {
-      name: "Home",
-      cameras: [{ cameraName: "Cam1", thumbnail: "asdf" }],
-    },
-    {
-      name: "Office",
-      cameras: [{ cameraName: "Cam1", thumbnail: "asdf" }],
-    },
-    {
-      name: "School",
-      cameras: [{ cameraName: "Cam1", thumbnail: "asdf" }],
-    },
-  ]);
+  const [devices, setDevices] = useState([]);
 
   const [selectedDevice, setSelectedDevice] = useState(null);
 
   const getDevicesInfo = async () => {
     try {
       const devices = await getEdgeDevices();
-      console.log(devices);
+      console.log("Got some devices: ", devices);
       setDevices(devices);
     } catch (error) {
       console.error("Error while getting devices info: ", error);
@@ -100,7 +88,6 @@ const HomeScreen = ({ navigation }) => {
 
   useEffect(() => {
     setSelectedDevice(devices[0]);
-    console.log(devices[0].cameras[0]);
   }, [devices]);
 
   useFocusEffect(
@@ -109,103 +96,10 @@ const HomeScreen = ({ navigation }) => {
     }, [])
   );
 
-  // const renderItem = ({ item, index }) => {
-  //   return (
-  //     <>
-  //       <View style={styles.deviceContainer}>
-  //         <View style={styles.deviceNameConatiner}>
-  //           <Text style={styles.deviceName}>{item.deviceID}</Text>
-  //           <View style={styles.camerasContainer}>
-  //             <View style={styles.camerasWrapper}>
-  //               {item.cameras.map((camera, index) => {
-  //                 if (index > 3) return null;
-  //                 return (
-  //                   <TouchableOpacity
-  //                     key={index}
-  //                     style={styles.camera}
-  //                     onPress={() => {
-  //                       navigation.navigate("LiveStream", {
-  //                         deviceID: item.deviceID,
-  //                         cameraName: camera.cameraName,
-  //                       });
-  //                     }}
-  //                   >
-  //                     <View style={{ flex: 1, width: "100%" }}>
-  //                       <Image
-  //                         style={{
-  //                           width: "100%",
-  //                           height: "100%",
-  //                           resizeMode: "cover",
-  //                         }}
-  //                         source={{
-  //                           uri: `data:image/jpeg;base64,${camera.thumbnail}`,
-  //                         }}
-  //                       />
-  //                     </View>
-
-  //                   </TouchableOpacity>
-  //                 );
-  //               })}
-  //             </View>
-  //             <View style={styles.deviceActionsContainer}>
-  //               <TouchableOpacity>
-  //                 <Icon name="delete" color={COLORS.black} size={30} />
-  //               </TouchableOpacity>
-  //               <TouchableOpacity>
-  //                 <Icon name="group" color={COLORS.black} size={30} />
-  //               </TouchableOpacity>
-  //               <TouchableOpacity>
-  //                 <Icon name="eye" color={COLORS.black} size={30} />
-  //               </TouchableOpacity>
-  //               <TouchableOpacity
-  //                 style={{ overflow: "visible" }}
-  //                 onPress={() => setMoreOptionsVisible(!moreOptionsVisible)}
-  //               >
-  //                 <Icon name="dots-vertical" color={COLORS.black} size={30} />
-
-  //                 {moreOptionsVisible && (
-  //                   <MoreOptions moreOptions={moreOptions} />
-  //                 )}
-  //               </TouchableOpacity>
-  //             </View>
-  //           </View>
-  //         </View>
-  //       </View>
-  //     </>
-  //   );
-  // };
-
-  const renderItem = ({ item, index }) => {
-    return (
-      <View
-        style={{
-          flex: 1,
-          width: 60,
-          aspectRatio: 1,
-          backgroundColor: COLORS.primaryColor,
-          marginHorizontal: 5,
-          alignItems: "center",
-          justifyContent: "center",
-          marginVertical: 5,
-          borderRadius: 5,
-        }}
-      >
-        <Icon name="home" size={30} color={COLORS.white} />
-        <Text style={{ color: COLORS.white }}>{item.deviceID}</Text>
-      </View>
-    );
-  };
-
   const Camera = ({ item }) => {
     return (
       <TouchableOpacity
-        style={{
-          width: "100%",
-          marginVertical: 10,
-          backgroundColor: "rgba(0,0,0,0.5)",
-          aspectRatio: 9 / 6,
-          borderRadius: 10,
-        }}
+        style={styles.cameraContainer}
         onPress={() => {
           navigation.navigate("LiveStream", {
             deviceID: selectedDevice.deviceID,
@@ -213,49 +107,26 @@ const HomeScreen = ({ navigation }) => {
           });
         }}
       >
-        <View
-          style={{
-            position: "absolute",
-            backgroundColor: "rgba(255,255,255,0.5)",
-            left: 10,
-            top: 10,
-            zIndex: 10,
-            paddingHorizontal: 10,
-            borderRadius: 20,
-            paddingVertical: 2,
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 5,
-          }}
-        >
+        <View style={styles.cameraNameContainer}>
           <View
-            style={{
-              width: 8,
-              height: 8,
-              backgroundColor: item.active ? COLORS.success : COLORS.error,
-              borderRadius: 100,
-              marginTop: 1.5,
-            }}
+            style={[
+              styles.dot,
+              { backgroundColor: item.active ? COLORS.success : COLORS.error },
+            ]}
           ></View>
 
           <Text
-            style={{
-              color: item.active ? COLORS.success : COLORS.error,
-              fontWeight: "500",
-            }}
+            style={[
+              styles.cameraName,
+              { color: item.active ? COLORS.success : COLORS.error },
+            ]}
           >
             {item?.cameraName}
           </Text>
         </View>
 
         <Image
-          style={{
-            width: "100%",
-            height: "100%",
-            resizeMode: "stretch",
-            borderRadius: 10,
-          }}
+          style={styles.cameraThumbnail}
           source={{
             uri: `data:image/jpeg;base64,${item?.thumbnail}`,
           }}
@@ -266,37 +137,32 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <View style={GlobalStyles.container}>
-      {/* <Text style={styles.logoutBtn} onPress={handleLogoutPress}>
-        Logout
-      </Text> */}
-      <Text style={{ color: COLORS.gray, fontSize: 16 }}>Hi Hammad!</Text>
-      <Text style={{ fontWeight: "700", fontSize: 15 }}>
-        Here are your devices
-      </Text>
-      <View
-        style={{
-          height: 70,
-          width: "100%",
-          // backgroundColor: "red",
-          marginVertical: 10,
-        }}
-      >
+      <Text style={styles.welcomeText}>Hi Hammad!</Text>
+      <Text style={styles.guidingText}>Here are your devices</Text>
+      <View style={styles.devicesContainer}>
         <FlatList
           data={devices}
-          renderItem={renderItem}
+          renderItem={({ item, index }) => {
+            return (
+              <DeviceCard
+                selected={item.deviceID == selectedDevice.deviceID}
+                iconName={"home"}
+                label={"Home"}
+              />
+            );
+          }}
           contentContainerStyle={{
             justifyContent: "center",
           }}
+          horizontal
+          ListFooterComponent={() => {
+            return (
+              <DeviceCard iconName={"add-circle"} label={"Add"} iconSize={32} />
+            );
+          }}
         />
       </View>
-      <View
-        style={{
-          flex: 1,
-          width: "100%",
-          // backgroundColor: "red",
-          marginVertical: 10,
-        }}
-      >
+      <View style={styles.camerasContainer}>
         <FlatList
           data={selectedDevice?.cameras}
           renderItem={Camera}
@@ -306,6 +172,9 @@ const HomeScreen = ({ navigation }) => {
           showsVerticalScrollIndicator={false}
         />
       </View>
+      <TouchableOpacity style={styles.addNewCameraBtn}>
+        <Icon name="add" size={35} color={COLORS.white} />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -313,56 +182,71 @@ const HomeScreen = ({ navigation }) => {
 export default HomeScreen;
 
 const styles = StyleSheet.create({
-  logoutBtn: {
-    alignSelf: "flex-end",
-    margin: 20,
-    fontWeight: "bold",
-    fontSize: 16,
-  },
-  deviceActionsContainer: {
+  cameraThumbnail: {
     width: "100%",
-    height: 40,
-    borderWidth: 1,
-    borderColor: "black",
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
+    height: "100%",
+    resizeMode: "stretch",
+    borderRadius: 10,
   },
-  camera: {
-    width: "50%",
-    height: "50%",
-    borderColor: "black",
-    borderWidth: 1,
+  cameraName: {
+    fontWeight: "500",
+  },
+  dot: {
+    width: 8,
+    height: 8,
+
+    borderRadius: 100,
+    marginTop: 1.5,
+  },
+  cameraNameContainer: {
+    position: "absolute",
+    backgroundColor: "rgba(255,255,255,0.5)",
+    left: 10,
+    top: 10,
+    zIndex: 10,
+    paddingHorizontal: 10,
+    borderRadius: 20,
+    paddingVertical: 2,
+    flexDirection: "row",
+    alignItems: "center",
     justifyContent: "center",
-    alignItems: "center",
+    gap: 5,
   },
-  camerasWrapper: {
-    flex: 1,
+  cameraContainer: {
     width: "100%",
-    flexDirection: "row",
-    flexWrap: "wrap",
+    marginVertical: 10,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    aspectRatio: 9 / 6,
+    borderRadius: 10,
+  },
+  addNewCameraBtn: {
+    position: "absolute",
+    bottom: 10,
+    right: 10,
+    zIndex: 10,
+    width: 60,
+    height: 60,
+    backgroundColor: COLORS.primaryColor,
+    borderRadius: 100,
+    alignItems: "center",
+    justifyContent: "center",
   },
   camerasContainer: {
-    width: "100%",
     flex: 1,
-  },
-  deviceName: {
-    fontSize: 18,
-    fontWeight: "bold",
-    paddingLeft: 5,
-    borderBottomWidth: 1,
-    borderColor: COLORS.black,
-  },
-  deviceNameConatiner: {
     width: "100%",
-    height: 300,
-    borderWidth: 1,
-    borderColor: COLORS.black,
-    backgroundColor: "red",
+    marginVertical: 10,
   },
-  deviceContainer: {
+  devicesContainer: {
+    height: 70,
     width: "100%",
-    paddingHorizontal: 30,
-    marginTop: 20,
+    marginVertical: 10,
+  },
+  guidingText: {
+    fontWeight: "700",
+    fontSize: 15,
+  },
+  welcomeText: {
+    color: COLORS.gray,
+    fontSize: 16,
   },
 });

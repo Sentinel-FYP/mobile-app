@@ -19,12 +19,11 @@ const TabNavigation = () => {
           size += 8;
 
           if (route.name === "Home") {
-            iconName = focused ? "home" : "home";
+            iconName = focused ? "home" : "home-outline";
           } else if (route.name === "Notifications") {
-            iconName = focused ? "bell" : "bell";
-          } else if (route.name === "Add Device") {
-            iconName = focused ? "plus-circle" : "plus-circle";
-            size += 4;
+            iconName = focused ? "bell" : "bell-outline";
+          } else if (route.name === "Profile") {
+            iconName = focused ? "account" : "account-outline";
           }
 
           return <Icon name={iconName} size={size} color={color} />;
@@ -36,8 +35,8 @@ const TabNavigation = () => {
       })}
     >
       <Tab.Screen name="Home" component={HomeStackScreen} />
-      <Tab.Screen name="Add Device" component={AddDeviceStackScreen} />
       <Tab.Screen name="Notifications" component={NotificationStackScreen} />
+      <Tab.Screen name="Profile" component={HomeStackScreen} />
     </Tab.Navigator>
   );
 };
