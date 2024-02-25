@@ -145,7 +145,7 @@ const HomeScreen = ({ navigation }) => {
           renderItem={({ item, index }) => {
             return (
               <DeviceCard
-                selected={item.deviceID == selectedDevice.deviceID}
+                selected={item.deviceID == selectedDevice?.deviceID}
                 iconName={"home"}
                 label={"Home"}
               />
@@ -172,7 +172,14 @@ const HomeScreen = ({ navigation }) => {
           showsVerticalScrollIndicator={false}
         />
       </View>
-      <TouchableOpacity style={styles.addNewCameraBtn}>
+      <TouchableOpacity
+        style={styles.addNewCameraBtn}
+        onPress={() => {
+          navigation.navigate("AddCamera", {
+            deviceID: selectedDevice?.deviceID,
+          });
+        }}
+      >
         <Icon name="add" size={35} color={COLORS.white} />
       </TouchableOpacity>
     </View>
