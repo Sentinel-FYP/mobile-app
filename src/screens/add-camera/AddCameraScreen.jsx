@@ -215,6 +215,7 @@ const AddCameraScreen = ({ route }) => {
           onPress={onAddManuallyPress}
         />
       </View>
+
       <AddCamera
         visible={addCameraModalVisible}
         cameraName={newCameraName}

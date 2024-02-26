@@ -10,11 +10,10 @@ import { useEffect, useState, useCallback } from "react";
 import { GlobalStyles } from "../../global/GlobalStyles";
 import { COLORS, DEVICE_ID } from "../../constants";
 import useAuth from "../../hooks/useAuth";
-import MoreOptions from "../../components/MoreOptions";
 import useBackend from "../../hooks/useBackend";
 import initializeSocket from "../../socket";
 import { useFocusEffect } from "@react-navigation/native";
-import { Icon, color, lightColors } from "@rneui/base";
+import { Icon } from "@rneui/base";
 import DeviceCard from "../../components/DeviceCard";
 
 let socket = null;
