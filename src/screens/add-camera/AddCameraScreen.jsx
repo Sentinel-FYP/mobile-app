@@ -1,10 +1,4 @@
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  StyleSheet,
-} from "react-native";
+import { View, Text, FlatList, TouchableOpacity, StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
 import { COLORS, DEVICE_ID } from "../../constants";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
@@ -13,12 +7,19 @@ import { Button } from "@rneui/themed";
 import AddCamera from "../../components/AddCamera";
 import { useNavigation } from "@react-navigation/native";
 
+// For testing purpose
+let dummyCam = {
+  name: "Gate 1",
+  ipAddress: "192.168.1.1",
+  online: true,
+};
+
 let socket = null;
 const AddCameraScreen = ({ route }) => {
-  const { deviceID } = route.params;
+  const { deviceID, cameras: existingDeviceCameras } = route.params;
   const navigation = useNavigation();
   const [addCameraModalVisible, setAddCameraModalVisible] = useState(false);
-  const [cameras, setCameras] = useState([]);
+  const [cameras, setCameras] = useState([dummyCam]);
 
   const [newCameraName, setNewCameraName] = useState({
     value: "",
@@ -159,62 +160,55 @@ const AddCameraScreen = ({ route }) => {
       <View style={styles.itemContainer}>
         <View style={styles.cameraInfoContainer}>
           <View style={styles.cameraIconContainer}>
-            <Icon size={32} color={COLORS.black} name="camera" />
-            <View style={styles.cameraInfo}>
-              <Text style={styles.cameraName}>{item.name}</Text>
-              <Text>{item.ipAddress}</Text>
+            <View style={styles.cameraIconCircle}>
+              <Icon size={32} color={COLORS.primaryColor} name="camera" />
             </View>
-          </View>
-
-          <View style={styles.onlineIndicator}>
-            <Text style={styles.onlineIndicatorText}>
-              {item.online ? "Online" : "Offline"}
-            </Text>
+            <View style={styles.cameraInfo}>
+              <Text style={styles.cameraName}>{item.name || item.cameraName}</Text>
+              <Text>{item.ipAddress || item.cameraIP}</Text>
+            </View>
           </View>
         </View>
         <View style={styles.actionsContainer}>
-          <TouchableOpacity
-            style={styles.actionIconContainer}
-            onPress={onDiscoveredCameraDeletePress}
-          >
-            <Icon size={26} color={COLORS.danger} name="delete" />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.actionIconContainer}
-            onPress={onDiscoveredCameraAddPress}
-          >
-            <Icon size={26} color={COLORS.black} name="plus" />
-          </TouchableOpacity>
+          {/* Only registered cameras contain username */}
+          {item.username ? (
+            <TouchableOpacity
+              style={[styles.actionIconContainer, styles.deleteIconContainer]}
+              onPress={onDiscoveredCameraDeletePress}
+            >
+              <Icon size={26} color={COLORS.danger} name="delete" />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={styles.actionIconContainer}
+              onPress={onDiscoveredCameraAddPress}
+            >
+              <Icon size={26} color={COLORS.black} name="plus" />
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     );
   };
   return (
     <View style={styles.container}>
-      <View style={styles.discoveredCameras}>
-        <Text style={styles.heading}>Discovered Cameras</Text>
-        <FlatList data={cameras} renderItem={renderItem} />
+      <View style={styles.allCameras}>
+        <View style={styles.camerasSection}>
+          <Text style={styles.heading}>Registered Cameras</Text>
+          <FlatList data={existingDeviceCameras} renderItem={renderItem} />
+        </View>
+        <View style={styles.camerasSection}>
+          <View style={styles.discoverCamera}>
+            <Text style={styles.heading}>Discovered Cameras</Text>
+            <TouchableOpacity onPress={onDiscoverNetworkPress}>
+              <Icon size={26} color={COLORS.darkGray} name="refresh" />
+            </TouchableOpacity>
+          </View>
+          <FlatList data={cameras} renderItem={renderItem} />
+          <AddManuallyButton title={"Add Manually"} onPress={onAddManuallyPress} />
+        </View>
       </View>
-      <View
-        style={{
-          flex: 0.2,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Button
-          title={"Discover Network"}
-          containerStyle={{ width: "80%", marginVertical: 10 }}
-          radius={"md"}
-          onPress={onDiscoverNetworkPress}
-        />
-        <Button
-          title={"Add Manually"}
-          containerStyle={{ width: "80%", marginVertical: 10 }}
-          radius={"md"}
-          onPress={onAddManuallyPress}
-        />
-      </View>
+
       <AddCamera
         visible={addCameraModalVisible}
         cameraName={newCameraName}
@@ -236,25 +230,35 @@ export default AddCameraScreen;
 
 const styles = StyleSheet.create({
   heading: {
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: "500",
+    color: COLORS.darkGray,
   },
-  discoveredCameras: {
+  discoverCamera: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingRight: 24,
+  },
+  camerasSection: {
     paddingTop: 25,
     paddingHorizontal: 10,
+  },
+  allCameras: {
     flex: 0.9,
   },
   container: {
     flex: 1,
   },
   actionIconContainer: {
-    width: 30,
-    height: 30,
     backgroundColor: "#F7F8F9",
     borderRadius: 100,
     marginHorizontal: 5,
     justifyContent: "center",
     alignItems: "center",
+    padding: 5,
+  },
+  deleteIconContainer: {
+    backgroundColor: COLORS.danger + "30",
   },
   actionsContainer: {
     flexDirection: "row",
@@ -282,21 +286,45 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
+  cameraIconCircle: {
+    padding: 8,
+    backgroundColor: COLORS.primaryColor + "20",
+    borderRadius: 30,
+  },
   cameraInfoContainer: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    width: "75%",
+    width: "80%",
     paddingRight: 30,
   },
   itemContainer: {
     width: "100%",
     padding: 10,
     height: 70,
-    marginTop: 10,
-    elevation: 1,
+    marginVertical: 5,
+    elevation: 2,
+    shadowColor: COLORS.darkGray,
     backgroundColor: COLORS.white,
+    borderRadius: 10,
     alignItems: "center",
     flexDirection: "row",
   },
 });
+
+export const AddManuallyButton = ({ title, onPress }) => {
+  return (
+    <TouchableOpacity style={styles.itemContainer} onPress={onPress}>
+      <View style={styles.cameraInfoContainer}>
+        <View style={styles.cameraIconContainer}>
+          <View style={styles.actionIconContainer}>
+            <Icon size={26} color={COLORS.black} name="plus" />
+          </View>
+          <View style={styles.cameraInfo}>
+            <Text style={styles.cameraName}>{title}</Text>
+          </View>
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+};
