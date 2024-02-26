@@ -1,11 +1,4 @@
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  StyleSheet,
-  Image,
-} from "react-native";
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image } from "react-native";
 import { useEffect, useState, useCallback } from "react";
 import { GlobalStyles } from "../../global/GlobalStyles";
 import { COLORS, DEVICE_ID } from "../../constants";
@@ -108,18 +101,10 @@ const HomeScreen = ({ navigation }) => {
       >
         <View style={styles.cameraNameContainer}>
           <View
-            style={[
-              styles.dot,
-              { backgroundColor: item.active ? COLORS.success : COLORS.error },
-            ]}
+            style={[styles.dot, { backgroundColor: item.active ? COLORS.success : COLORS.error }]}
           ></View>
 
-          <Text
-            style={[
-              styles.cameraName,
-              { color: item.active ? COLORS.success : COLORS.error },
-            ]}
-          >
+          <Text style={[styles.cameraName, { color: item.active ? COLORS.success : COLORS.error }]}>
             {item?.cameraName}
           </Text>
         </View>
@@ -155,9 +140,7 @@ const HomeScreen = ({ navigation }) => {
           }}
           horizontal
           ListFooterComponent={() => {
-            return (
-              <DeviceCard iconName={"add-circle"} label={"Add"} iconSize={32} />
-            );
+            return <DeviceCard iconName={"add-circle"} label={"Add"} iconSize={32} />;
           }}
         />
       </View>
@@ -176,6 +159,7 @@ const HomeScreen = ({ navigation }) => {
         onPress={() => {
           navigation.navigate("AddCamera", {
             deviceID: selectedDevice?.deviceID,
+            cameras: selectedDevice?.cameras,
           });
         }}
       >
