@@ -1,4 +1,10 @@
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { COLORS, DEVICE_ID } from "../../constants";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
@@ -164,7 +170,9 @@ const AddCameraScreen = ({ route }) => {
               <Icon size={32} color={COLORS.primaryColor} name="camera" />
             </View>
             <View style={styles.cameraInfo}>
-              <Text style={styles.cameraName}>{item.name || item.cameraName}</Text>
+              <Text style={styles.cameraName}>
+                {item.name || item.cameraName}
+              </Text>
               <Text>{item.ipAddress || item.cameraIP}</Text>
             </View>
           </View>
@@ -176,7 +184,7 @@ const AddCameraScreen = ({ route }) => {
               style={[styles.actionIconContainer, styles.deleteIconContainer]}
               onPress={onDiscoveredCameraDeletePress}
             >
-              <Icon size={26} color={COLORS.danger} name="delete" />
+              <Icon size={24} color={COLORS.danger} name="delete" />
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
@@ -205,7 +213,10 @@ const AddCameraScreen = ({ route }) => {
             </TouchableOpacity>
           </View>
           <FlatList data={cameras} renderItem={renderItem} />
-          <AddManuallyButton title={"Add Manually"} onPress={onAddManuallyPress} />
+          <AddManuallyButton
+            title={"Add Manually"}
+            onPress={onAddManuallyPress}
+          />
         </View>
       </View>
 
