@@ -3,12 +3,21 @@ import React from "react";
 import { COLORS } from "../constants";
 import { Icon } from "@rneui/themed";
 
-const DeviceCard = ({ iconName, selected, label, iconSize, onPress }) => {
+const DeviceCard = ({
+  iconName,
+  selected,
+  label,
+  iconSize,
+  onPress,
+  iconType,
+  style,
+}) => {
   return (
     <TouchableOpacity
       style={[
         styles.container,
         selected ? styles.selectedContainer : styles.unselectedContainer,
+        style,
       ]}
       onPress={onPress}
     >
@@ -16,6 +25,7 @@ const DeviceCard = ({ iconName, selected, label, iconSize, onPress }) => {
         name={iconName}
         size={iconSize ?? 30}
         color={selected ? COLORS.white : COLORS.primaryColor}
+        type={iconType}
       />
       <Text style={[selected ? styles.selectedText : styles.unselectedText]}>
         {label}
@@ -37,6 +47,12 @@ export const styles = StyleSheet.create({
     borderRadius: 5,
     borderColor: COLORS.primaryColor,
     borderWidth: 1,
+    backgroundColor: COLORS.secondaryColor,
+    shadowColor: COLORS.black,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.5,
+    shadowRadius: 6,
+    elevation: 6,
   },
   selectedContainer: {
     backgroundColor: COLORS.primaryColor,

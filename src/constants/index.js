@@ -20,6 +20,15 @@ export const COLORS = {
   appBackground: "#FFFFFF",
 };
 
+export const DEVICE_CATEGORIES = {
+  Home: "home",
+  Office: "office-building",
+  School: "school",
+  Shop: "store",
+  Crib: "cradle",
+  Outdoor: "fence",
+  Other: "shield-check",
+};
 export const ICE_SERVERS = [
   { urls: ["stun:stun.l.google.com:19302"] },
   {

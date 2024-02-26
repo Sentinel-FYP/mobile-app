@@ -1,12 +1,10 @@
-import { View, Text } from "react-native";
 import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import HomeStackScreen from "./HomeStack";
 import NotificationStackScreen from "./NotificationStack";
-import { darkColors, lightColors } from "@rneui/base";
-import AddDeviceStackScreen from "./AddDeviceStack";
+import { lightColors } from "@rneui/base";
+
 import { COLORS } from "../constants";
 
 const Tab = createBottomTabNavigator();

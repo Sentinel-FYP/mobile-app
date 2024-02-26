@@ -1,7 +1,14 @@
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+} from "react-native";
 import { useEffect, useState, useCallback } from "react";
 import { GlobalStyles } from "../../global/GlobalStyles";
-import { COLORS, DEVICE_ID } from "../../constants";
+import { COLORS, DEVICE_ID, DEVICE_CATEGORIES } from "../../constants";
 import useAuth from "../../hooks/useAuth";
 import useBackend from "../../hooks/useBackend";
 import initializeSocket from "../../socket";
@@ -101,10 +108,18 @@ const HomeScreen = ({ navigation }) => {
       >
         <View style={styles.cameraNameContainer}>
           <View
-            style={[styles.dot, { backgroundColor: item.active ? COLORS.success : COLORS.error }]}
+            style={[
+              styles.dot,
+              { backgroundColor: item.active ? COLORS.success : COLORS.error },
+            ]}
           ></View>
 
-          <Text style={[styles.cameraName, { color: item.active ? COLORS.success : COLORS.error }]}>
+          <Text
+            style={[
+              styles.cameraName,
+              { color: item.active ? COLORS.success : COLORS.error },
+            ]}
+          >
             {item?.cameraName}
           </Text>
         </View>
@@ -130,8 +145,9 @@ const HomeScreen = ({ navigation }) => {
             return (
               <DeviceCard
                 selected={item.deviceID == selectedDevice?.deviceID}
-                iconName={"home"}
-                label={"Home"}
+                iconName={DEVICE_CATEGORIES[item.category]}
+                label={item.deviceName}
+                iconType={"material-community"}
               />
             );
           }}
@@ -140,7 +156,16 @@ const HomeScreen = ({ navigation }) => {
           }}
           horizontal
           ListFooterComponent={() => {
-            return <DeviceCard iconName={"add-circle"} label={"Add"} iconSize={32} />;
+            return (
+              <DeviceCard
+                iconName={"add-circle"}
+                label={"Add"}
+                iconSize={32}
+                onPress={() => {
+                  navigation.navigate("AddDeviceScreen");
+                }}
+              />
+            );
           }}
         />
       </View>

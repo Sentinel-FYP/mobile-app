@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from "../screens/home/HomeScreen";
 import AddCamera from "../screens/add-camera/AddCameraScreen";
 import LiveStream from "../screens/live-stream/LiveStream";
+import AddDeviceScreen from "../screens/add-device/AddDeviceScreen";
 import { COLORS } from "../constants";
 
 const HomeStack = createNativeStackNavigator();
@@ -31,6 +32,11 @@ const HomeStackScreen = () => {
         name="LiveStream"
         component={LiveStream}
         options={{ title: "Gate 4" }}
+      />
+      <HomeStack.Screen
+        name="AddDeviceScreen"
+        component={AddDeviceScreen}
+        options={{ title: "Register Device" }}
       />
     </HomeStack.Navigator>
   );
