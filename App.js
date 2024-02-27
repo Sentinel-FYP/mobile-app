@@ -7,10 +7,10 @@ import { RecoilRoot } from "recoil";
 import { LogLevel, OneSignal } from "react-native-onesignal";
 const theme = createTheme({
   lightColors: {
-    primary: "#02776B",
+    primary: COLORS.primaryColor,
   },
   darkColors: {
-    primary: "#02776B",
+    primary: COLORS.primaryColor,
   },
   components: {
     Button: {

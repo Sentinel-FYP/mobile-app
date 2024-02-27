@@ -1,5 +1,12 @@
 import { useCallback, useRef, useState, useEffect } from "react";
-import { Alert, AlertButton, Linking, StyleSheet, View } from "react-native";
+import {
+  Alert,
+  AlertButton,
+  Linking,
+  StyleSheet,
+  View,
+  Modal,
+} from "react-native";
 import {
   Code,
   useCameraDevice,
@@ -35,7 +42,7 @@ const showCodeAlert = (value, onDismissed) => {
   Alert.alert("Scanned Code", value, buttons);
 };
 
-export default function CodeScannerPage({ navigation }) {
+export default function AddDeviceModal({ visible, closeModal }) {
   const [cameraPermissionStatus, setCameraPermissionStatus] = useState(false);
   useEffect(() => {
     checkCameraPermission();
@@ -77,6 +84,7 @@ export default function CodeScannerPage({ navigation }) {
   };
 
   // console.log("Camera available:", Camera.getAvailableCameraDevices());
+
   // 1. Use a simple default back camera
   const device = useCameraDevice("back");
 
@@ -90,6 +98,7 @@ export default function CodeScannerPage({ navigation }) {
 
   // 4. On code scanned, we show an aler to the user
   const isShowingAlert = useRef(false);
+
   const onCodeScanned = useCallback((codes) => {
     console.log(`Scanned ${codes.length} codes:`, codes);
     const value = codes[0]?.value;
@@ -108,62 +117,60 @@ export default function CodeScannerPage({ navigation }) {
   });
 
   return (
-    <View style={styles.container}>
-      {!cameraPermissionStatus ? (
-        <View style={GlobalStyles.container}>
-          <Text style={styles.permissionRequestText}>
-            Please give camera permission for QR Scanner to work.
-          </Text>
-          <Button
-            color="primary"
-            title={"Click Here to Request Camera Access"}
-            size="lg"
-            containerStyle={{ width: 300, borderRadius: 5 }}
-            onPress={requestCameraPermission}
-          />
-        </View>
-      ) : (
-        <View style={GlobalStyles.centeredContainer}>
-          <Text style={styles.instructionsText}>
-            Scan the QR code of your device.
-          </Text>
-          {device != null && (
-            <View style={styles.cameraContainer}>
-              <Camera
-                style={StyleSheet.absoluteFill}
-                device={device}
-                isActive={isActive}
-                codeScanner={codeScanner}
-                torch={torch ? "on" : "off"}
-                enableZoomGesture={true}
-              />
+    <Modal visible={visible}>
+      <View style={styles.container}>
+        {!cameraPermissionStatus ? (
+          <View style={GlobalStyles.container}>
+            <Text style={styles.permissionRequestText}>
+              Please give camera permission for QR Scanner to work.
+            </Text>
+            <Button
+              color="primary"
+              title={"Click Here to Request Camera Access"}
+              size="lg"
+              containerStyle={{ width: 300, borderRadius: 5 }}
+              onPress={requestCameraPermission}
+            />
+          </View>
+        ) : (
+          <View style={GlobalStyles.centeredContainer}>
+            {device != null && (
+              <View style={styles.cameraContainer}>
+                <Camera
+                  style={StyleSheet.absoluteFill}
+                  device={device}
+                  isActive={isActive}
+                  codeScanner={codeScanner}
+                  torch={torch ? "on" : "off"}
+                  enableZoomGesture={true}
+                />
+              </View>
+            )}
+            <Text style={styles.instructionsText}>
+              Scan the QR code of your device.
+            </Text>
+            <View style={styles.rightButtonRow}>
+              <PressableOpacity
+                style={styles.button}
+                onPress={() => setTorch(!torch)}
+                disabledOpacity={0.4}
+              >
+                <IonIcon
+                  name={torch ? "flash" : "flash-off"}
+                  color="white"
+                  size={24}
+                />
+              </PressableOpacity>
             </View>
-          )}
 
-          <View style={styles.rightButtonRow}>
-            <PressableOpacity
-              style={styles.button}
-              onPress={() => setTorch(!torch)}
-              disabledOpacity={0.4}
-            >
-              <IonIcon
-                name={torch ? "flash" : "flash-off"}
-                color="white"
-                size={24}
-              />
+            {/* Back Button */}
+            <PressableOpacity style={styles.backButton} onPress={closeModal}>
+              <IonIcon name="close-outline" color={COLORS.black} size={35} />
             </PressableOpacity>
           </View>
-
-          {/* Back Button */}
-          <PressableOpacity
-            style={styles.backButton}
-            onPress={navigation.goBack}
-          >
-            <IonIcon name="close-outline" color="white" size={35} />
-          </PressableOpacity>
-        </View>
-      )}
-    </View>
+        )}
+      </View>
+    </Modal>
   );
 }
 
@@ -176,7 +183,7 @@ const styles = StyleSheet.create({
   instructionsText: {
     color: COLORS.black,
     fontSize: 18,
-    marginBottom: 30,
+    marginTop: 20,
     fontWeight: 700,
   },
   permissionRequestText: {
