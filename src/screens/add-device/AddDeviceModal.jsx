@@ -21,28 +21,15 @@ import { Button } from "@rneui/base";
 import { GlobalStyles } from "../../global/GlobalStyles";
 import { Text } from "@rneui/themed";
 import { COLORS } from "../../constants";
+import Loader from "../../components/Loader";
 
-const showCodeAlert = (value, onDismissed) => {
-  const buttons = [
-    {
-      text: "Close",
-      style: "cancel",
-      onPress: onDismissed,
-    },
-  ];
-  if (value.startsWith("http")) {
-    buttons.push({
-      text: "Open URL",
-      onPress: () => {
-        Linking.openURL(value);
-        onDismissed();
-      },
-    });
-  }
-  Alert.alert("Scanned Code", value, buttons);
-};
-
-export default function AddDeviceModal({ visible, closeModal }) {
+export default function AddDeviceModal({
+  visible,
+  closeModal,
+  onCodeScanned,
+  loading,
+  cameraActivated,
+}) {
   const [cameraPermissionStatus, setCameraPermissionStatus] = useState(false);
   useEffect(() => {
     checkCameraPermission();
@@ -96,21 +83,7 @@ export default function AddDeviceModal({ visible, closeModal }) {
   // 3. (Optional) enable a torch setting
   const [torch, setTorch] = useState(false);
 
-  // 4. On code scanned, we show an aler to the user
-  const isShowingAlert = useRef(false);
-
-  const onCodeScanned = useCallback((codes) => {
-    console.log(`Scanned ${codes.length} codes:`, codes);
-    const value = codes[0]?.value;
-    if (value == null) return;
-    if (isShowingAlert.current) return;
-    showCodeAlert(value, () => {
-      isShowingAlert.current = false;
-    });
-    isShowingAlert.current = true;
-  }, []);
-
-  // 5. Initialize the Code Scanner to scan QR codes and Barcodes
+  // 4. Initialize the Code Scanner to scan QR codes and Barcodes
   const codeScanner = useCodeScanner({
     codeTypes: ["qr"],
     onCodeScanned: onCodeScanned,
@@ -139,11 +112,27 @@ export default function AddDeviceModal({ visible, closeModal }) {
                 <Camera
                   style={StyleSheet.absoluteFill}
                   device={device}
-                  isActive={isActive}
+                  isActive={cameraActivated && isActive}
                   codeScanner={codeScanner}
                   torch={torch ? "on" : "off"}
                   enableZoomGesture={true}
                 />
+                {loading && (
+                  <View
+                    style={{
+                      position: "absolute",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      backgroundColor: "rgba(0,0,0,0.3)",
+                      width: "100%",
+                      height: "100%",
+                      top: 0,
+                      left: 0,
+                    }}
+                  >
+                    <Loader />
+                  </View>
+                )}
               </View>
             )}
             <Text style={styles.instructionsText}>

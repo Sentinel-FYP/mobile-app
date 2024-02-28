@@ -1,14 +1,31 @@
-import { View, Text, StyleSheet, ScrollView } from "react-native";
-import { useState } from "react";
+import { View, Text, StyleSheet, ScrollView, Alert } from "react-native";
+import { useState, useRef, useCallback } from "react";
 import { GlobalStyles } from "../../global/GlobalStyles";
 import { DEVICE_CATEGORIES } from "../../constants";
 import DeviceCard from "../../components/DeviceCard";
 import { Button, Input } from "@rneui/themed";
 import AddDeviceModal from "./AddDeviceModal";
+import useBackend from "../../hooks/useBackend";
+
+const showCodeAlert = (title, message, onDismissed) => {
+  const buttons = [
+    {
+      text: "Close",
+      style: "default",
+      onPress: onDismissed,
+    },
+  ];
+
+  Alert.alert(title, message, buttons);
+};
 
 const AddDeviceScreen = ({ navigation }) => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [QRScannerVisible, setQRScannerVisible] = useState(false);
+  const [cameraActivated, setCameraActivated] = useState(true);
+  const { loading, registerEdgeDevice } = useBackend();
+  const isProcessingQRCode = useRef(false);
+
   const [newDeviceName, setNewDeviceName] = useState({
     value: "",
     error: "",
@@ -28,6 +45,48 @@ const AddDeviceScreen = ({ navigation }) => {
   const closeModal = () => {
     setQRScannerVisible(false);
   };
+
+  // const onCodeScanned = useCallback((codes) => {
+  //   console.log(`Scanned ${codes.length} codes:`, codes);
+  //   const value = codes[0]?.value;
+  //   if (value == null) return;
+  //   if (isProcessingQRCode.current) return;
+  //   showCodeAlert("Successful", "Device is registered.", () => {
+  //     isProcessingQRCode.current = false;
+  //   });
+  //   isProcessingQRCode.current = true;
+  // }, []);
+
+  const onCodeScanned = useCallback(async (codes) => {
+    try {
+      if (isProcessingQRCode.current) return;
+      isProcessingQRCode.current = true;
+      console.log(`Scanned ${codes.length} codes:`, codes);
+      const value = codes[0]?.value;
+      if (value == null) return;
+
+      setCameraActivated(false);
+
+      const device = {
+        deviceID: value,
+        deviceName: newDeviceName.value,
+        category: selectedCategory,
+      };
+
+      const data = await registerEdgeDevice(device);
+      console.log("data after registering device", data);
+
+      showCodeAlert("Successful", "Device is registered.", () => {
+        navigation.navigate("HomeScreen");
+      });
+    } catch (error) {
+      showCodeAlert("Error", error.message, () => {
+        closeModal();
+        isProcessingQRCode.current = false;
+        setCameraActivated(true);
+      });
+    }
+  }, []);
   return (
     <View style={GlobalStyles.container}>
       <ScrollView
@@ -77,7 +136,13 @@ const AddDeviceScreen = ({ navigation }) => {
           )}
         </View>
       </ScrollView>
-      <AddDeviceModal visible={QRScannerVisible} closeModal={closeModal} />
+      <AddDeviceModal
+        visible={QRScannerVisible}
+        closeModal={closeModal}
+        onCodeScanned={onCodeScanned}
+        loading={loading}
+        cameraActivated={cameraActivated}
+      />
     </View>
   );
 };

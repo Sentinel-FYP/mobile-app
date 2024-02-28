@@ -41,22 +41,27 @@ const useBackend = () => {
     }
   }
 
-  // async function registerEdgeDevice({deviceID,deviceName,category}){
-  //    setLoading(true);
-  //    try {
-  //      const url = `${API_BASE_URL}/edgeDevices/register`;
-  //      const authToken = await getAuthToken();
-  //      const response = await axios.post,(url, {
-  //        headers: { Authorization: `Bearer ${authToken}` },
-  //      });
-  //      return response.data;
-  //    } catch (error) {
-  //      throw error.response.data;
-  //    } finally {
-  //      setLoading(false);
-  //    }
-  // }
-  return { loading, getNotificationsFromServer, getEdgeDevices };
+  async function registerEdgeDevice(device) {
+    setLoading(true);
+    try {
+      const url = `${API_BASE_URL}/edgeDevices/register`;
+      const authToken = await getAuthToken();
+      const response = await axios.put(url, device, {
+        headers: { Authorization: `Bearer ${authToken}` },
+      });
+      return response.data;
+    } catch (error) {
+      throw error.response.data;
+    } finally {
+      setLoading(false);
+    }
+  }
+  return {
+    loading,
+    getNotificationsFromServer,
+    getEdgeDevices,
+    registerEdgeDevice,
+  };
 };
 
 export default useBackend;
