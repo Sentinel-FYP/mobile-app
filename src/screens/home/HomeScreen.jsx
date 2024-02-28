@@ -15,11 +15,12 @@ import initializeSocket from "../../socket";
 import { useFocusEffect } from "@react-navigation/native";
 import { Icon } from "@rneui/base";
 import DeviceCard from "../../components/DeviceCard";
+import Loader from "../../components/Loader";
 
 let socket = null;
 const HomeScreen = ({ navigation }) => {
   const { logout } = useAuth();
-  const { getEdgeDevices } = useBackend();
+  const { loading, getEdgeDevices } = useBackend();
   const [moreOptionsVisible, setMoreOptionsVisible] = useState(false);
   const [devices, setDevices] = useState([]);
 
@@ -169,27 +170,36 @@ const HomeScreen = ({ navigation }) => {
           }}
         />
       </View>
-      <View style={styles.camerasContainer}>
-        <FlatList
-          data={selectedDevice?.cameras}
-          renderItem={Camera}
-          contentContainerStyle={{
-            justifyContent: "center",
+      {loading ? (
+        <View style={GlobalStyles.centeredContainer}>
+          <Loader />
+        </View>
+      ) : (
+        <View style={styles.camerasContainer}>
+          <FlatList
+            data={selectedDevice?.cameras}
+            renderItem={Camera}
+            contentContainerStyle={{
+              justifyContent: "center",
+            }}
+            showsVerticalScrollIndicator={false}
+          />
+        </View>
+      )}
+
+      {!loading && selectedDevice && (
+        <TouchableOpacity
+          style={styles.addNewCameraBtn}
+          onPress={() => {
+            navigation.navigate("AddCamera", {
+              deviceID: selectedDevice?.deviceID,
+              cameras: selectedDevice?.cameras,
+            });
           }}
-          showsVerticalScrollIndicator={false}
-        />
-      </View>
-      <TouchableOpacity
-        style={styles.addNewCameraBtn}
-        onPress={() => {
-          navigation.navigate("AddCamera", {
-            deviceID: selectedDevice?.deviceID,
-            cameras: selectedDevice?.cameras,
-          });
-        }}
-      >
-        <Icon name="add" size={35} color={COLORS.white} />
-      </TouchableOpacity>
+        >
+          <Icon name="add" size={35} color={COLORS.white} />
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
