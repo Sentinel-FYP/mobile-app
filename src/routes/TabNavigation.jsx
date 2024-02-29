@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import HomeStackScreen from "./HomeStack";
 import NotificationStackScreen from "./NotificationStack";
+import ProfileStackScreen from "./ProfileStack";
 import { lightColors } from "@rneui/base";
 
 import { COLORS } from "../constants";
@@ -34,7 +35,7 @@ const TabNavigation = () => {
     >
       <Tab.Screen name="Home" component={HomeStackScreen} />
       <Tab.Screen name="Notifications" component={NotificationStackScreen} />
-      <Tab.Screen name="Profile" component={HomeStackScreen} />
+      <Tab.Screen name="Profile" component={ProfileStackScreen} />
     </Tab.Navigator>
   );
 };
