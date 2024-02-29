@@ -12,7 +12,24 @@ const useBackend = () => {
     setLoading(true);
     try {
       const deviceID = "6558f04547674cc283de271b";
-      const url = `${API_BASE_URL}/anomalyLog/${deviceID}`;
+      const url = `${API_BASE_URL}/edgeDevices/${deviceID}/anomalyLogs`;
+      const authToken = await getAuthToken();
+      const response = await axios.get(url, {
+        headers: { Authorization: `Bearer ${authToken}` },
+      });
+      return response.data;
+    } catch (error) {
+      throw error.response.data;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  //GET 1 anomaly log from /api/anomalyLogs/:anomalyLogID . This result will contain an attribute videoUri. Which is the url for clip stored in S3 Bucket.
+  async function getAnomalyLog(anomalyLogID) {
+    setLoading(true);
+    try {
+      const url = `${API_BASE_URL}/anomalyLogs/${anomalyLogID}`;
       const authToken = await getAuthToken();
       const response = await axios.get(url, {
         headers: { Authorization: `Bearer ${authToken}` },
@@ -61,6 +78,7 @@ const useBackend = () => {
     getNotificationsFromServer,
     getEdgeDevices,
     registerEdgeDevice,
+    getAnomalyLog,
   };
 };
 

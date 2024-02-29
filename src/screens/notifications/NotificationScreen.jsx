@@ -1,16 +1,23 @@
-import { View, Text, FlatList, Image, StyleSheet } from "react-native";
-import { useLayoutEffect, useState } from "react";
+import {
+  View,
+  Text,
+  FlatList,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
+import { useEffect, useState } from "react";
 import { GlobalStyles } from "../../global/GlobalStyles";
 import useBackend from "../../hooks/useBackend";
 import Loader from "../../components/Loader";
 import { COLORS } from "../../constants";
-import { formatDateTime } from "../../util";
+import { formatDateTime, getTime } from "../../util";
 
-const NotificationScreen = () => {
+const NotificationScreen = ({ navigation }) => {
   const { loading, getNotificationsFromServer } = useBackend();
   const [notifications, setNotifications] = useState([]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const getLogs = async () => {
       try {
         const logs = await getNotificationsFromServer();
@@ -25,7 +32,12 @@ const NotificationScreen = () => {
   }, []);
   const renderItem = ({ item, index }) => {
     return (
-      <View style={styles.itemContainer}>
+      <TouchableOpacity
+        style={styles.itemContainer}
+        onPress={() => {
+          navigation.navigate("AnomalyClipScreen", { anomaly: item });
+        }}
+      >
         <View style={styles.imageContainer}>
           <Image
             style={styles.notificationImage}
@@ -33,18 +45,16 @@ const NotificationScreen = () => {
           />
         </View>
         <View style={styles.notificationInfoContainer}>
-          <View style={styles.timeAndDateContainer}>
+          <View>
+            <Text style={{ fontWeight: "500" }}>Anomaly Detected</Text>
             <Text
               style={styles.cameraNameText}
-            >{`${item.fromDevice.deviceID} • ${item.fromDevice.cameras[0].cameraName}`}</Text>
-
-            <Text style={styles.timeText}>{`${
-              formatDateTime(item.occurredAt).date
-            }`}</Text>
-            <Text>{`${formatDateTime(item.occurredAt).time}`}</Text>
+            >{`${item.fromDevice.deviceName} • ${item.fromDevice.cameras[0].cameraName}`}</Text>
           </View>
+
+          <Text style={styles.timeText}>{`${getTime(item.occurredAt)}`}</Text>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
   return (
@@ -73,23 +83,22 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   heading: {
-    fontSize: 24,
-    fontWeight: "bold",
+    fontSize: 22,
+    fontWeight: "500",
     padding: 20,
   },
-  timeText: {
-    marginTop: 10,
-  },
+  timeText: {},
   cameraNameText: {
-    fontSize: 16,
-    fontWeight: "500",
+    color: COLORS.gray,
   },
-  timeAndDateContainer: {
-    width: "100%",
-    alignItems: "center",
-  },
+
   notificationInfoContainer: {
     width: "70%",
+    // backgroundColor: "red",
+    paddingHorizontal: 20,
+    justifyContent: "space-between",
+    flexDirection: "row",
+    paddingVertical: 10,
   },
   notificationImage: {
     width: "100%",
@@ -109,6 +118,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
     elevation: 5,
     shadowColor: "#000",
+    width: "95%",
+    borderRadius: 20,
     shadowOffset: { width: 0, height: 2, shadowOpacity: 0.3, shadowRadius: 3 },
+    alignSelf: "center",
   },
 });
