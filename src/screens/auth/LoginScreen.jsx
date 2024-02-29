@@ -5,6 +5,7 @@ import { COLORS } from "../../constants";
 import useAuth from "../../hooks/useAuth";
 import useStorage from "../../hooks/useStorage";
 import Loader from "../../components/Loader";
+import { OneSignal } from "react-native-onesignal";
 
 const Login = ({ navigation }) => {
   // Variables
@@ -34,6 +35,7 @@ const Login = ({ navigation }) => {
     try {
       const userData = await login(email.value, password.value);
       console.log(userData);
+      // OneSignal.login(userData.user._id);
       await setAuthToken(userData.token);
       await setLocalUser(userData.user);
       navigation.navigate("TabNavigation");
