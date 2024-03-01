@@ -73,12 +73,30 @@ const useBackend = () => {
       setLoading(false);
     }
   }
+
+  async function updateUserProfile(user) {
+    setLoading(true);
+    try {
+      const url = `${API_BASE_URL}/users/${user.userID}r`;
+      const authToken = await getAuthToken();
+      const response = await axios.put(url, user, {
+        headers: { Authorization: `Bearer ${authToken}` },
+      });
+      return response.data;
+    } catch (error) {
+      throw error.response.data;
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return {
     loading,
     getNotificationsFromServer,
     getEdgeDevices,
     registerEdgeDevice,
     getAnomalyLog,
+    updateUserProfile,
   };
 };
 
