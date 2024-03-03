@@ -8,6 +8,7 @@ const AnomalyClipScreen = ({ route, navigation }) => {
   const { anomaly } = route.params;
   const { loading, getAnomalyLog } = useBackend();
   const [anomalyVideoUri, setAnomalyVideoUri] = useState(" ");
+  const [buffering, setBuffering] = useState(false);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -18,7 +19,7 @@ const AnomalyClipScreen = ({ route, navigation }) => {
     const fetchAnomalyDetails = async () => {
       try {
         const data = await getAnomalyLog(anomaly._id);
-        console.log("Anomaly Log Data: ", data);
+        console.log("Anomaly Log Data: ", data.fromCamera);
         setAnomalyVideoUri(data.videoUri);
       } catch (error) {
         console.error("Error while fetching anomaly log: ", error);
@@ -37,7 +38,7 @@ const AnomalyClipScreen = ({ route, navigation }) => {
             alignItems: "center",
           }}
         >
-          {loading && (
+          {(loading || buffering) && (
             <Loader
               styles={{
                 position: "absolute",
@@ -55,19 +56,29 @@ const AnomalyClipScreen = ({ route, navigation }) => {
             ref={(ref) => {
               this.player = ref;
             }} // Store reference
-            onBuffer={this.onBuffer} // Callback when remote video is buffering
             onError={this.videoError} // Callback when video cannot be loaded
             style={{
               width: "100%",
-              // aspectRatio: 9 / 6,
-              height: 450,
-              // backgroundColor: "black",
+
+              height: 470,
             }}
             resizeMode="contain"
             posterResizeMode="contain"
             controls
             poster={`data:image/png;base64,${anomaly.thumbnail}`}
             repeat
+            onBuffer={() => {
+              setBuffering(true);
+            }}
+            onEnd={() => {
+              setBuffering(false);
+            }}
+            onLoadStart={() => {
+              setBuffering(true);
+            }}
+            onLoad={() => {
+              setBuffering(false);
+            }}
           ></Video>
         </View>
       </View>

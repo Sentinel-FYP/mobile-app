@@ -35,13 +35,13 @@ const Login = ({ navigation }) => {
     try {
       const userData = await login(email.value, password.value);
       console.log(userData);
-      // OneSignal.login(userData.user._id);
+      OneSignal.login(userData.user.userID);
       await setAuthToken(userData.token);
       await setLocalUser(userData.user);
       navigation.navigate("TabNavigation");
     } catch (error) {
-      Alert.alert("Error while loggin in", error);
-      console.error("Error while logging in: ", error);
+      Alert.alert("Error while logging in", error.message);
+      console.error("Error while logging in: ", error.message);
     }
   };
 
@@ -76,8 +76,9 @@ const Login = ({ navigation }) => {
               color="primary"
               title={"Login"}
               size="lg"
-              containerStyle={{ width: 200, borderRadius: 5 }}
+              containerStyle={{ width: 200 }}
               onPress={handleLoginPress}
+              radius={"xl"}
             />
           )}
         </View>
@@ -95,7 +96,7 @@ const Login = ({ navigation }) => {
 export default Login;
 const styles = StyleSheet.create({
   registerNowText: {
-    color: "blue",
+    color: COLORS.primaryColor,
     fontWeight: "bold",
   },
   inputContainer: {

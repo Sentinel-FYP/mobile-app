@@ -1,15 +1,26 @@
 import { useEffect, useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Alert } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+  Alert,
+} from "react-native";
 import { GlobalStyles } from "../../global/GlobalStyles";
 import useAuth from "../../hooks/useAuth";
 import { COLORS } from "../../constants";
 import { Input } from "@rneui/base";
 import useStorage from "../../hooks/useStorage";
 import useBackend from "../../hooks/useBackend";
+import { OneSignal } from "react-native-onesignal";
 
 const AddDeviceScreen = ({ navigation }) => {
   const [profileLoading, setProfileLoading] = useState(true);
-  const [firstName, setFirstName] = useState({ value: null, errorMessage: null });
+  const [firstName, setFirstName] = useState({
+    value: null,
+    errorMessage: null,
+  });
   const [lastName, setLastName] = useState({ value: null, errorMessage: null });
   const [email, setEmail] = useState({ value: null, errorMessage: null });
   const [userID, setUserID] = useState();
@@ -37,7 +48,10 @@ const AddDeviceScreen = ({ navigation }) => {
     setEmail({ ...email, errorMessage: null });
 
     if (!firstName.value) {
-      setFirstName({ ...firstName, errorMessage: "Please fill out all fields." });
+      setFirstName({
+        ...firstName,
+        errorMessage: "Please fill out all fields.",
+      });
     }
     if (!lastName.value) {
       setLastName({ ...lastName, errorMessage: "Please fill out all fields." });
@@ -67,6 +81,7 @@ const AddDeviceScreen = ({ navigation }) => {
   const handleLogoutPress = async () => {
     try {
       await logout();
+      OneSignal.logout();
       navigation.navigate("AuthStack");
     } catch (error) {
       console.error("Error while logging out: ", error);
@@ -76,7 +91,9 @@ const AddDeviceScreen = ({ navigation }) => {
   return (
     <View style={GlobalStyles.container}>
       {profileLoading || loading ? (
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
           <ActivityIndicator size={"large"} color={COLORS.primaryColor} />
         </View>
       ) : (
@@ -87,7 +104,9 @@ const AddDeviceScreen = ({ navigation }) => {
               label={"First Name"}
               labelStyle={styles.inputLabel}
               value={firstName.value}
-              onChangeText={(value) => setFirstName({ ...firstName, value: value })}
+              onChangeText={(value) =>
+                setFirstName({ ...firstName, value: value })
+              }
               errorMessage={firstName.errorMessage}
               style={styles.inputField}
               inputContainerStyle={{ borderBottomWidth: 0 }}
@@ -97,7 +116,9 @@ const AddDeviceScreen = ({ navigation }) => {
               label={"Last Name"}
               labelStyle={styles.inputLabel}
               value={lastName.value}
-              onChangeText={(value) => setLastName({ ...lastName, value: value })}
+              onChangeText={(value) =>
+                setLastName({ ...lastName, value: value })
+              }
               errorMessage={lastName.errorMessage}
               style={styles.inputField}
               inputContainerStyle={{ borderBottomWidth: 0 }}
@@ -114,11 +135,17 @@ const AddDeviceScreen = ({ navigation }) => {
               containerStyle={{ paddingHorizontal: 0 }}
             />
 
-            <TouchableOpacity onPress={handleUpdateProfile} style={styles.updateContainer}>
+            <TouchableOpacity
+              onPress={handleUpdateProfile}
+              style={styles.updateContainer}
+            >
               <Text style={styles.updateText}>Update</Text>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity onPress={handleLogoutPress} style={styles.logoutContainer}>
+          <TouchableOpacity
+            onPress={handleLogoutPress}
+            style={styles.logoutContainer}
+          >
             <Text style={styles.logoutText}>Logout</Text>
           </TouchableOpacity>
         </View>

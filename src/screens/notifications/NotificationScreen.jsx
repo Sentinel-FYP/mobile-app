@@ -21,8 +21,7 @@ const NotificationScreen = ({ navigation }) => {
     const getLogs = async () => {
       try {
         const logs = await getNotificationsFromServer();
-        console.log("logs[0] is", JSON.stringify(logs[0].fromDevice, null, 2));
-        console.log("cameras", logs[0].fromDevice.cameras);
+        console.log("Logs: ", logs.length);
         setNotifications(logs.reverse());
       } catch (error) {
         console.error(error);

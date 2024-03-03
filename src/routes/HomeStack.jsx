@@ -6,10 +6,17 @@ import AddCamera from "../screens/add-camera/AddCameraScreen";
 import LiveStream from "../screens/live-stream/LiveStream";
 import AddDeviceScreen from "../screens/add-device/AddDeviceScreen";
 import { COLORS } from "../constants";
+import { useNavigation } from "@react-navigation/native";
+import { OneSignal } from "react-native-onesignal";
 
 const HomeStack = createNativeStackNavigator();
 
 const HomeStackScreen = () => {
+  const navigation = useNavigation();
+  // Method for listening for notification clicks
+  OneSignal.Notifications.addEventListener("click", (event) => {
+    navigation.navigate("NotificationStack", { Screen: "NotificationScreen" });
+  });
   return (
     <HomeStack.Navigator
       screenOptions={{
