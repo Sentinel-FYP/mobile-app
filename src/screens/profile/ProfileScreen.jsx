@@ -186,6 +186,7 @@ const styles = StyleSheet.create({
     width: "70%",
     alignSelf: "center",
     marginTop: 20,
+    borderRadius: 20,
   },
   logoutContainer: {
     borderWidth: 1,

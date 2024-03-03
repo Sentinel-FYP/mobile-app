@@ -157,6 +157,7 @@ const Register = ({ navigation }) => {
               size="lg"
               containerStyle={styles.registerButton}
               onPress={handleRegisterPress}
+              radius={"xl"}
             />
           )}
         </View>
@@ -179,7 +180,6 @@ const styles = StyleSheet.create({
   },
   registerButton: {
     width: 200,
-    borderRadius: 5,
   },
   loaderContainer: {
     marginTop: 20,
