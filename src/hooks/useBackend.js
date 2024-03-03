@@ -77,7 +77,7 @@ const useBackend = () => {
   async function updateUserProfile(user) {
     setLoading(true);
     try {
-      const url = `${API_BASE_URL}/users/${user.userID}r`;
+      const url = `${API_BASE_URL}/users/${user.userID}`;
       const authToken = await getAuthToken();
       const response = await axios.put(url, user, {
         headers: { Authorization: `Bearer ${authToken}` },
