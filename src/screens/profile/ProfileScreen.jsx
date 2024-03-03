@@ -14,6 +14,7 @@ import { Input } from "@rneui/base";
 import useStorage from "../../hooks/useStorage";
 import useBackend from "../../hooks/useBackend";
 import { OneSignal } from "react-native-onesignal";
+import { Button } from "@rneui/themed";
 
 const AddDeviceScreen = ({ navigation }) => {
   const [profileLoading, setProfileLoading] = useState(true);
@@ -97,7 +98,13 @@ const AddDeviceScreen = ({ navigation }) => {
           <ActivityIndicator size={"large"} color={COLORS.primaryColor} />
         </View>
       ) : (
-        <View style={{ flex: 1, justifyContent: "space-between" }}>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "space-between",
+            paddingHorizontal: 5,
+          }}
+        >
           <View>
             <Text style={styles.mainHeading}>Personal Details</Text>
             <Input
@@ -109,7 +116,6 @@ const AddDeviceScreen = ({ navigation }) => {
               }
               errorMessage={firstName.errorMessage}
               style={styles.inputField}
-              inputContainerStyle={{ borderBottomWidth: 0 }}
               containerStyle={{ paddingHorizontal: 0 }}
             />
             <Input
@@ -121,7 +127,6 @@ const AddDeviceScreen = ({ navigation }) => {
               }
               errorMessage={lastName.errorMessage}
               style={styles.inputField}
-              inputContainerStyle={{ borderBottomWidth: 0 }}
               containerStyle={{ paddingHorizontal: 0 }}
             />
             <Input
@@ -131,23 +136,26 @@ const AddDeviceScreen = ({ navigation }) => {
               onChangeText={(value) => setEmail({ ...email, value: value })}
               errorMessage={email.errorMessage}
               style={styles.inputField}
-              inputContainerStyle={{ borderBottomWidth: 0 }}
               containerStyle={{ paddingHorizontal: 0 }}
             />
 
-            <TouchableOpacity
+            <Button
               onPress={handleUpdateProfile}
-              style={styles.updateContainer}
-            >
-              <Text style={styles.updateText}>Update</Text>
-            </TouchableOpacity>
+              containerStyle={styles.btnContainer}
+              title={"Update"}
+              radius={"xl"}
+              size="lg"
+            />
           </View>
-          <TouchableOpacity
+          <Button
             onPress={handleLogoutPress}
-            style={styles.logoutContainer}
-          >
-            <Text style={styles.logoutText}>Logout</Text>
-          </TouchableOpacity>
+            containerStyle={styles.btnContainer}
+            title={"Logout"}
+            titleStyle={{ color: COLORS.danger }}
+            radius={"xl"}
+            size="lg"
+            type="outline"
+          />
         </View>
       )}
     </View>
@@ -167,23 +175,17 @@ const styles = StyleSheet.create({
     color: COLORS.darkGray,
   },
   inputField: {
-    borderWidth: 1,
     marginTop: 10,
-    borderRadius: 5,
-    borderColor: COLORS.darkGray,
-    paddingHorizontal: 10,
   },
   updateText: {
     color: COLORS.white,
     fontSize: 20,
     fontWeight: "bold",
   },
-  updateContainer: {
-    marginTop: 10,
-    backgroundColor: COLORS.primaryColor,
-    borderRadius: 5,
-    paddingVertical: 10,
-    alignItems: "center",
+  btnContainer: {
+    width: "70%",
+    alignSelf: "center",
+    marginTop: 20,
   },
   logoutContainer: {
     borderWidth: 1,
@@ -191,6 +193,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingVertical: 10,
     alignItems: "center",
+    width: "70%",
+    alignSelf: "center",
   },
   logoutText: {
     color: COLORS.danger,

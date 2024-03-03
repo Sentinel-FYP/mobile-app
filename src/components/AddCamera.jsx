@@ -20,6 +20,7 @@ const AddCamera = ({
   onIpAddressChange,
   onUsernameChange,
   onPasswordChange,
+  loading,
   ...props
 }) => {
   return (
@@ -55,7 +56,7 @@ const AddCamera = ({
           value={ipAddress.value}
           label="IP Address"
           labelStyle={styles.inputLabel}
-          placeholder="e.g 192.168.1.1"
+          placeholder="e.g 192.168.1.1:8554"
           onChangeText={onIpAddressChange}
           errorMessage={ipAddress.error}
         />
@@ -83,9 +84,10 @@ const AddCamera = ({
         <Button
           title={"Add Camera"}
           onPress={onAddCameraPress}
-          radius={"md"}
+          radius={"xl"}
           size="lg"
           containerStyle={{ marginVertical: 30, width: 200 }}
+          loading={loading}
         />
       </ScrollView>
     </Modal>

@@ -1,4 +1,10 @@
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { COLORS, DEVICE_ID } from "../../constants";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
@@ -20,6 +26,7 @@ const AddCameraScreen = ({ route }) => {
   const navigation = useNavigation();
   const [addCameraModalVisible, setAddCameraModalVisible] = useState(false);
   const [cameras, setCameras] = useState([dummyCam]);
+  const [loading, setLoading] = useState(false);
 
   const [newCameraName, setNewCameraName] = useState({
     value: "",
@@ -61,7 +68,6 @@ const AddCameraScreen = ({ route }) => {
     }
 
     console.log("Adding camera: ", newCameraName.value, newIpAddress.value);
-
     socket.emit("cameras:add", {
       deviceID: deviceID,
       cameraName: newCameraName.value,
@@ -69,6 +75,14 @@ const AddCameraScreen = ({ route }) => {
       username: newUsername.value,
       password: newPassword.value,
     });
+    setLoading(true);
+  };
+
+  const onCameraAdded = (data) => {
+    setLoading(false);
+    console.log("Camera added: ", data);
+    setAddCameraModalVisible(false);
+    navigation.navigate("HomeScreen");
   };
 
   const onAddCameraModalClose = () => {
@@ -112,12 +126,6 @@ const AddCameraScreen = ({ route }) => {
 
   const onDiscoverNetworkPress = () => {
     socket.emit("cameras:discover", { deviceID: deviceID });
-  };
-
-  const onCameraAdded = (data) => {
-    console.log("Camera added: ", data);
-    setAddCameraModalVisible(false);
-    navigation.navigate("HomeScreen");
   };
 
   async function startSocket() {
@@ -164,7 +172,9 @@ const AddCameraScreen = ({ route }) => {
               <Icon size={32} color={COLORS.primaryColor} name="camera" />
             </View>
             <View style={styles.cameraInfo}>
-              <Text style={styles.cameraName}>{item.name || item.cameraName}</Text>
+              <Text style={styles.cameraName}>
+                {item.name || item.cameraName}
+              </Text>
               <Text>{item.ipAddress || item.cameraIP}</Text>
             </View>
           </View>
@@ -205,7 +215,10 @@ const AddCameraScreen = ({ route }) => {
             </TouchableOpacity>
           </View>
           <FlatList data={cameras} renderItem={renderItem} />
-          <AddManuallyButton title={"Add Manually"} onPress={onAddManuallyPress} />
+          <AddManuallyButton
+            title={"Add Manually"}
+            onPress={onAddManuallyPress}
+          />
         </View>
       </View>
 
@@ -221,6 +234,7 @@ const AddCameraScreen = ({ route }) => {
         onUsernameChange={setUsername}
         onPasswordChange={setPassword}
         onAddCameraPress={onAddCameraPress}
+        loading={loading}
       />
     </View>
   );
