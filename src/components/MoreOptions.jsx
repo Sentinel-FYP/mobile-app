@@ -9,7 +9,13 @@ import {
 } from "react-native";
 import { COLORS } from "../constants";
 
-const MoreOptions = ({ menuVisible, hideMenu, menuPosition }) => {
+const MoreOptions = ({
+  menuVisible,
+  hideMenu,
+  menuPosition,
+  deleteCamera,
+  reconnectCamera,
+}) => {
   return (
     <Modal visible={menuVisible} transparent={true} onRequestClose={hideMenu}>
       <TouchableWithoutFeedback onPress={hideMenu}>
@@ -24,7 +30,7 @@ const MoreOptions = ({ menuVisible, hideMenu, menuPosition }) => {
               },
             ]}
           >
-            <TouchableOpacity style={styles.option}>
+            <TouchableOpacity style={styles.option} onPress={reconnectCamera}>
               <Icon name="loop" size={20} color={COLORS.primaryColor} />
               <Text>Reconnect</Text>
             </TouchableOpacity>
@@ -32,7 +38,7 @@ const MoreOptions = ({ menuVisible, hideMenu, menuPosition }) => {
               <Icon name="edit" size={20} color={COLORS.primaryColor} />
               <Text>Update</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.option}>
+            <TouchableOpacity style={styles.option} onPress={deleteCamera}>
               <Icon name="delete-outline" size={20} color={COLORS.danger} />
               <Text style={{ color: COLORS.danger }}>Delete</Text>
             </TouchableOpacity>

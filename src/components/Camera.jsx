@@ -42,18 +42,7 @@ const Camera = ({ item, onMorePress, selectedDevice, setCameraForOptions }) => {
         }}
       />
       <TouchableOpacity
-        style={{
-          width: 30,
-          height: 30,
-          position: "absolute",
-          right: 10,
-          top: 10,
-          zIndex: 10,
-          backgroundColor: "rgba(256,256,256,0.5)",
-          borderRadius: 100,
-          alignItems: "center",
-          justifyContent: "center",
-        }}
+        style={styles.moreBtn}
         onPress={(e) => {
           setCameraForOptions(item);
           onMorePress(e);
@@ -68,6 +57,18 @@ const Camera = ({ item, onMorePress, selectedDevice, setCameraForOptions }) => {
 export default Camera;
 
 const styles = StyleSheet.create({
+  moreBtn: {
+    width: 30,
+    height: 30,
+    position: "absolute",
+    right: 10,
+    top: 10,
+    zIndex: 10,
+    backgroundColor: "rgba(256,256,256,0.5)",
+    borderRadius: 100,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   cameraThumbnail: {
     width: "100%",
     height: "100%",

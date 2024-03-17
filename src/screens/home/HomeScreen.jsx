@@ -4,7 +4,7 @@ import {
   FlatList,
   TouchableOpacity,
   StyleSheet,
-  Image,
+  Alert,
 } from "react-native";
 import { useEffect, useState, useCallback } from "react";
 import { GlobalStyles } from "../../global/GlobalStyles";
@@ -20,8 +20,8 @@ import MoreOptions from "../../components/MoreOptions";
 
 let socket = null;
 const HomeScreen = ({ navigation }) => {
+  // State variables
   const { loading: edgeLoading, getEdgeDevices } = useBackend();
-  const { loading: camerasLoading, getCamerasFromEdge } = useBackend();
   const [moreOptionsVisible, setMoreOptionsVisible] = useState(false);
   const [devices, setDevices] = useState([]);
   const [cameras, setCameras] = useState([]);
@@ -30,6 +30,10 @@ const HomeScreen = ({ navigation }) => {
   const [menuVisible, setMenuVisible] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
 
+  // Backend hooks
+  const { loading: camerasLoading, getCamerasFromEdge } = useBackend();
+
+  // Functions
   const showMenu = (event) => {
     console.log("event: ", event.nativeEvent);
     setMenuPosition({ x: event.nativeEvent.pageX, y: event.nativeEvent.pageY });
@@ -38,6 +42,50 @@ const HomeScreen = ({ navigation }) => {
 
   const hideMenu = () => {
     setMenuVisible(false);
+    setCameraForOptions(null);
+  };
+
+  const deleteCamera = async () => {
+    try {
+      Alert.alert(
+        "Confirm Delete",
+        "Are you sure you want to delete this camera?",
+        [
+          {
+            text: "Cancel",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel",
+          },
+          {
+            text: "Delete",
+            onPress: async () => {
+              // Perform deletion action
+              socket.emit("cameras:delete", {
+                deviceID: selectedDevice.deviceID,
+                cameraID: cameraForOptions._id,
+              });
+              hideMenu();
+            },
+            style: "destructive",
+          },
+        ],
+        { cancelable: false }
+      );
+    } catch (error) {
+      console.error("Error while deleting camera: ", error);
+    }
+  };
+
+  const reconnectCamera = async () => {
+    try {
+      socket.emit("cameras:reconnect", {
+        deviceID: selectedDevice.deviceID,
+        cameraID: cameraForOptions._id,
+      });
+      hideMenu();
+    } catch (error) {
+      console.error("Error while reconnecting camera: ", error);
+    }
   };
 
   const getDevicesInfo = async () => {
@@ -69,7 +117,7 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
-  //use effects
+  // Use effects
   useEffect(() => {
     getDevicesInfo();
     startSocket();
@@ -176,6 +224,8 @@ const HomeScreen = ({ navigation }) => {
         menuVisible={menuVisible}
         menuPosition={menuPosition}
         hideMenu={hideMenu}
+        deleteCamera={deleteCamera}
+        reconnectCamera={reconnectCamera}
       />
     </View>
   );
