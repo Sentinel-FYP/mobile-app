@@ -109,6 +109,7 @@ const HomeScreen = ({ navigation }) => {
         onPress={() => {
           navigation.navigate("LiveStream", {
             deviceID: selectedDevice.deviceID,
+            cameraID: item._id,
             cameraName: item.cameraName,
           });
         }}

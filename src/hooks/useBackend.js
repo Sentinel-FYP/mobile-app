@@ -106,6 +106,38 @@ const useBackend = () => {
     }
   }
 
+  async function getCameraByID(cameraID) {
+    setLoading(true);
+    try {
+      const url = `${API_BASE_URL}/cameras/${cameraID}`;
+      const authToken = await getAuthToken();
+      const response = await axios.get(url, {
+        headers: { Authorization: `Bearer ${authToken}` },
+      });
+      return response.data;
+    } catch (error) {
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function updateCameraByID(cameraID, camera) {
+    setLoading(true);
+    try {
+      const url = `${API_BASE_URL}/cameras/${cameraID}`;
+      const authToken = await getAuthToken();
+      const response = await axios.put(url, camera, {
+        headers: { Authorization: `Bearer ${authToken}` },
+      });
+      return response.data;
+    } catch (error) {
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return {
     loading,
     getNotificationsFromServer,
@@ -114,6 +146,8 @@ const useBackend = () => {
     getAnomalyLog,
     updateUserProfile,
     getCamerasFromEdge,
+    getCameraByID,
+    updateCameraByID,
   };
 };
 

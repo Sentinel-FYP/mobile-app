@@ -5,7 +5,7 @@ import { ICE_SERVERS, DEVICE_ID, CAMERA_NAME } from "../constants";
 
 let socket = null;
 let peerConnection = null;
-const useWebRTC = ({ cameraName, deviceID }) => {
+const useWebRTC = ({ cameraID, deviceID }) => {
   const [remoteStream, setRemoteStream] = useState(null);
 
   const onRTCAnswer = async (answer) => {
@@ -93,7 +93,7 @@ const useWebRTC = ({ cameraName, deviceID }) => {
         sdp: peerConnection.localDescription.sdp,
         type: peerConnection.localDescription.type,
         deviceID: deviceID || DEVICE_ID,
-        cameraName: cameraName || CAMERA_NAME,
+        cameraID: cameraID,
       });
     } catch (error) {
       throw new Error("Error while negotiating with socket:", error);

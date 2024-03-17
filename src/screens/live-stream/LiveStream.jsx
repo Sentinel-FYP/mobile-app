@@ -3,13 +3,20 @@ import { RTCView } from "react-native-webrtc";
 import useWebRTC from "../../hooks/useWebRTC";
 import { GlobalStyles } from "../../global/GlobalStyles";
 import { Button } from "@rneui/themed";
+import { useLayoutEffect } from "react";
+import { useNavigation } from "@react-navigation/native";
 
 const LiveStream = ({ route }) => {
-  const { cameraName, deviceID } = route.params;
+  const { cameraID, cameraName, deviceID } = route.params;
   const { remoteStream, startStreaming, stopStreaming } = useWebRTC({
-    cameraName,
+    cameraID,
     deviceID,
   });
+  const navigation = useNavigation();
+
+  useLayoutEffect(() => {
+    navigation.setOptions({ title: cameraName });
+  }, []);
   return (
     <View style={{ flex: 1 }}>
       <Text style={{ padding: 10, fontSize: 20, fontWeight: 500 }}>
