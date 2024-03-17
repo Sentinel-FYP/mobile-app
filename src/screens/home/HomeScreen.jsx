@@ -1,4 +1,11 @@
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+} from "react-native";
 import { useEffect, useState, useCallback } from "react";
 import { GlobalStyles } from "../../global/GlobalStyles";
 import { COLORS, DEVICE_ID, DEVICE_CATEGORIES } from "../../constants";
@@ -11,9 +18,10 @@ import Loader from "../../components/Loader";
 
 let socket = null;
 const HomeScreen = ({ navigation }) => {
-  const { loading, getEdgeDevices } = useBackend();
+  const { loading, getEdgeDevices, getCamerasFromEdge } = useBackend();
   const [moreOptionsVisible, setMoreOptionsVisible] = useState(false);
   const [devices, setDevices] = useState([]);
+  const [cameras, setCameras] = useState([]);
 
   const [selectedDevice, setSelectedDevice] = useState(null);
 
@@ -24,6 +32,16 @@ const HomeScreen = ({ navigation }) => {
       setDevices(devices);
     } catch (error) {
       console.error("Error while getting devices info: ", error);
+    }
+  };
+
+  const getCameras = async (deviceID) => {
+    try {
+      const cameras = await getCamerasFromEdge(deviceID);
+      console.log("Got some cameras: ", cameras);
+      setCameras(cameras);
+    } catch (error) {
+      console.error("Error while getting cameras info: ", error);
     }
   };
 
@@ -72,6 +90,12 @@ const HomeScreen = ({ navigation }) => {
     setSelectedDevice(devices[0]);
   }, [devices]);
 
+  useEffect(() => {
+    if (selectedDevice?.deviceID) {
+      getCameras(selectedDevice?.deviceID);
+    }
+  }, [selectedDevice]);
+
   useFocusEffect(
     useCallback(() => {
       getDevicesInfo();
@@ -91,10 +115,18 @@ const HomeScreen = ({ navigation }) => {
       >
         <View style={styles.cameraNameContainer}>
           <View
-            style={[styles.dot, { backgroundColor: item.active ? COLORS.success : COLORS.error }]}
+            style={[
+              styles.dot,
+              { backgroundColor: item.active ? COLORS.success : COLORS.error },
+            ]}
           ></View>
 
-          <Text style={[styles.cameraName, { color: item.active ? COLORS.success : COLORS.error }]}>
+          <Text
+            style={[
+              styles.cameraName,
+              { color: item.active ? COLORS.success : COLORS.error },
+            ]}
+          >
             {item?.cameraName}
           </Text>
         </View>
@@ -151,7 +183,7 @@ const HomeScreen = ({ navigation }) => {
       ) : (
         <View style={styles.camerasContainer}>
           <FlatList
-            data={selectedDevice?.cameras}
+            data={cameras}
             renderItem={Camera}
             contentContainerStyle={{
               justifyContent: "center",

@@ -90,6 +90,22 @@ const useBackend = () => {
     }
   }
 
+  async function getCamerasFromEdge(deviceID) {
+    setLoading(true);
+    try {
+      const url = `${API_BASE_URL}/cameras?deviceID=${deviceID}`;
+      const authToken = await getAuthToken();
+      const response = await axios.get(url, {
+        headers: { Authorization: `Bearer ${authToken}` },
+      });
+      return response.data;
+    } catch (error) {
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return {
     loading,
     getNotificationsFromServer,
@@ -97,6 +113,7 @@ const useBackend = () => {
     registerEdgeDevice,
     getAnomalyLog,
     updateUserProfile,
+    getCamerasFromEdge,
   };
 };
 
