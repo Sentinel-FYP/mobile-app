@@ -15,6 +15,8 @@ import { useFocusEffect } from "@react-navigation/native";
 import { Icon } from "@rneui/base";
 import DeviceCard from "../../components/DeviceCard";
 import Loader from "../../components/Loader";
+import Camera from "../../components/Camera";
+import MoreOptions from "../../components/MoreOptions";
 
 let socket = null;
 const HomeScreen = ({ navigation }) => {
@@ -23,8 +25,20 @@ const HomeScreen = ({ navigation }) => {
   const [moreOptionsVisible, setMoreOptionsVisible] = useState(false);
   const [devices, setDevices] = useState([]);
   const [cameras, setCameras] = useState([]);
-
   const [selectedDevice, setSelectedDevice] = useState(null);
+  const [cameraForOptions, setCameraForOptions] = useState(null);
+  const [menuVisible, setMenuVisible] = useState(false);
+  const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
+
+  const showMenu = (event) => {
+    console.log("event: ", event.nativeEvent);
+    setMenuPosition({ x: event.nativeEvent.pageX, y: event.nativeEvent.pageY });
+    setMenuVisible(true);
+  };
+
+  const hideMenu = () => {
+    setMenuVisible(false);
+  };
 
   const getDevicesInfo = async () => {
     try {
@@ -46,25 +60,6 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
-  const closeMoreOptions = () => {
-    setMoreOptionsVisible(false);
-  };
-  const moreOptions = [
-    {
-      option: "Add New Camera",
-      onPress: () => {
-        navigation.navigate("AddCamera", { deviceID: DEVICE_ID });
-        closeMoreOptions();
-      },
-    },
-    {
-      option: "Show Device Info",
-      onPress: () => {
-        closeMoreOptions();
-      },
-    },
-  ];
-
   const startSocket = async () => {
     try {
       socket = await initializeSocket();
@@ -84,6 +79,7 @@ const HomeScreen = ({ navigation }) => {
         console.log("socket off");
         socket.off("room:join");
       }
+      setMenuVisible(false);
     };
   }, []);
 
@@ -102,46 +98,6 @@ const HomeScreen = ({ navigation }) => {
       getDevicesInfo();
     }, [])
   );
-
-  const Camera = ({ item }) => {
-    return (
-      <TouchableOpacity
-        style={styles.cameraContainer}
-        onPress={() => {
-          navigation.navigate("LiveStream", {
-            deviceID: selectedDevice.deviceID,
-            cameraID: item._id,
-            cameraName: item.cameraName,
-          });
-        }}
-      >
-        <View style={styles.cameraNameContainer}>
-          <View
-            style={[
-              styles.dot,
-              { backgroundColor: item.active ? COLORS.success : COLORS.error },
-            ]}
-          ></View>
-
-          <Text
-            style={[
-              styles.cameraName,
-              { color: item.active ? COLORS.success : COLORS.error },
-            ]}
-          >
-            {item?.cameraName}
-          </Text>
-        </View>
-
-        <Image
-          style={styles.cameraThumbnail}
-          source={{
-            uri: `data:image/jpeg;base64,${item?.thumbnail}`,
-          }}
-        />
-      </TouchableOpacity>
-    );
-  };
 
   return (
     <View style={GlobalStyles.container}>
@@ -186,7 +142,15 @@ const HomeScreen = ({ navigation }) => {
         <View style={styles.camerasContainer}>
           <FlatList
             data={cameras}
-            renderItem={Camera}
+            renderItem={({ item }) => (
+              <Camera
+                item={item}
+                navigation={navigation}
+                onMorePress={showMenu}
+                selectedDevice={selectedDevice}
+                setCameraForOptions={setCameraForOptions}
+              />
+            )}
             contentContainerStyle={{
               justifyContent: "center",
             }}
@@ -208,6 +172,11 @@ const HomeScreen = ({ navigation }) => {
           <Icon name="add" size={35} color={COLORS.white} />
         </TouchableOpacity>
       )}
+      <MoreOptions
+        menuVisible={menuVisible}
+        menuPosition={menuPosition}
+        hideMenu={hideMenu}
+      />
     </View>
   );
 };

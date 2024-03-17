@@ -1,44 +1,76 @@
-import { View, Text, TouchableOpacity, FlatList } from "react-native";
-import { memo } from "react";
+import { Icon } from "@rneui/themed";
+import {
+  View,
+  StyleSheet,
+  Modal,
+  TouchableWithoutFeedback,
+  Text,
+  TouchableOpacity,
+} from "react-native";
 import { COLORS } from "../constants";
 
-const MoreOptions = memo(({ moreOptions }) => {
-  console.log(moreOptions);
-  const renderItem = ({ item, index }) => {
-    console.log(item);
-    return (
-      <TouchableOpacity
-        style={{
-          width: "100%",
-          height: 40,
-
-          justifyContent: "center",
-          padding: 10,
-          overflow: "visible",
-        }}
-        onPress={item.onPress}
-      >
-        <Text style={{ color: COLORS.black }}>{item.option}</Text>
-      </TouchableOpacity>
-    );
-  };
+const MoreOptions = ({ menuVisible, hideMenu, menuPosition }) => {
   return (
-    <View
-      style={{
-        minWidth: 150,
-
-        zIndex: 100,
-        position: "absolute",
-        right: 0,
-        top: -80,
-        backgroundColor: COLORS.white,
-        alignItems: "center",
-        overflow: "visible",
-      }}
-    >
-      <FlatList data={moreOptions} renderItem={renderItem} />
-    </View>
+    <Modal visible={menuVisible} transparent={true} onRequestClose={hideMenu}>
+      <TouchableWithoutFeedback onPress={hideMenu}>
+        <View style={styles.modalContainer}>
+          {/* Content of your menu */}
+          <View
+            style={[
+              styles.menu,
+              {
+                top: menuPosition.y + 10,
+                left: menuPosition.x - styles.menu.width,
+              },
+            ]}
+          >
+            <TouchableOpacity style={styles.option}>
+              <Icon name="loop" size={20} color={COLORS.primaryColor} />
+              <Text>Reconnect</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.option}>
+              <Icon name="edit" size={20} color={COLORS.primaryColor} />
+              <Text>Update</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.option}>
+              <Icon name="delete-outline" size={20} color={COLORS.danger} />
+              <Text style={{ color: COLORS.danger }}>Delete</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </TouchableWithoutFeedback>
+    </Modal>
   );
-});
+};
 
 export default MoreOptions;
+
+const styles = StyleSheet.create({
+  option: {
+    paddingHorizontal: 2,
+    paddingVertical: 10,
+    flexDirection: "row",
+    gap: 12,
+    alignItems: "center",
+  },
+  // Your existing styles...
+
+  modalContainer: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.2)",
+    justifyContent: "flex-end",
+  },
+
+  menu: {
+    position: "absolute",
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    padding: 10,
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    width: 150,
+  },
+});
