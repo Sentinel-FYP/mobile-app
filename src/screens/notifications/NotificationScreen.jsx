@@ -48,7 +48,7 @@ const NotificationScreen = ({ navigation }) => {
             <Text style={{ fontWeight: "500" }}>Anomaly Detected</Text>
             <Text
               style={styles.cameraNameText}
-            >{`${item.fromDevice.deviceName} • ${item.fromDevice.cameras[0].cameraName}`}</Text>
+            >{`${item.fromDevice.deviceName} • ${item.fromCamera.cameraName}`}</Text>
           </View>
 
           <Text style={styles.timeText}>{`${getTime(item.occurredAt)}`}</Text>
@@ -58,32 +58,29 @@ const NotificationScreen = ({ navigation }) => {
   };
   return (
     <View style={GlobalStyles.centeredContainer}>
-      {loading ? (
-        <Loader />
-      ) : (
-        <View style={GlobalStyles.centeredContainer}>
-          <Text style={styles.heading}>Notifications</Text>
-          {notifications.length === 0 ? (
-            <View
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Text style={{ fontSize: 16, fontWeight: "500" }}>
-                No anomalies to show.
-              </Text>
-            </View>
-          ) : (
-            <FlatList
-              data={notifications}
-              renderItem={renderItem}
-              style={styles.flatList}
-            />
-          )}
-        </View>
-      )}
+      <View style={GlobalStyles.centeredContainer}>
+        <Text style={styles.heading}>Notifications</Text>
+        {notifications.length === 0 && (
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Text style={{ fontSize: 16, fontWeight: "500" }}>
+              No anomalies to show.
+            </Text>
+          </View>
+        )}
+        <FlatList
+          data={notifications}
+          renderItem={renderItem}
+          style={styles.flatList}
+          contentContainerStyle={{ flexGrow: 1 }}
+          refreshing={loading}
+          onRefresh={getNotificationsFromServer}
+        />
+      </View>
     </View>
   );
 };
@@ -100,9 +97,11 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     padding: 20,
   },
-  timeText: {},
+  timeText: {
+    color: COLORS.darkGray,
+  },
   cameraNameText: {
-    color: COLORS.gray,
+    color: COLORS.darkGray,
   },
 
   notificationInfoContainer: {
