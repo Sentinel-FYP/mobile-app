@@ -18,7 +18,8 @@ import Loader from "../../components/Loader";
 
 let socket = null;
 const HomeScreen = ({ navigation }) => {
-  const { loading, getEdgeDevices, getCamerasFromEdge } = useBackend();
+  const { loading: edgeLoading, getEdgeDevices } = useBackend();
+  const { loading: camerasLoading, getCamerasFromEdge } = useBackend();
   const [moreOptionsVisible, setMoreOptionsVisible] = useState(false);
   const [devices, setDevices] = useState([]);
   const [cameras, setCameras] = useState([]);
@@ -177,7 +178,7 @@ const HomeScreen = ({ navigation }) => {
           }}
         />
       </View>
-      {loading ? (
+      {camerasLoading ? (
         <View style={GlobalStyles.centeredContainer}>
           <Loader />
         </View>
@@ -194,7 +195,7 @@ const HomeScreen = ({ navigation }) => {
         </View>
       )}
 
-      {!loading && selectedDevice && (
+      {!edgeLoading && selectedDevice && (
         <TouchableOpacity
           style={styles.addNewCameraBtn}
           onPress={() => {
