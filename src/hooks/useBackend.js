@@ -12,7 +12,7 @@ const useBackend = () => {
     setLoading(true);
     try {
       const deviceID = "6558f04547674cc283de271b";
-      const url = `${API_BASE_URL}/edgeDevices/${deviceID}/anomalyLogs`;
+      const url = `${API_BASE_URL}/anomalyLogs`;
       const authToken = await getAuthToken();
       const response = await axios.get(url, {
         headers: { Authorization: `Bearer ${authToken}` },

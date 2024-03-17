@@ -58,16 +58,30 @@ const NotificationScreen = ({ navigation }) => {
   };
   return (
     <View style={GlobalStyles.centeredContainer}>
-      {notifications.length == 0 ? (
+      {loading ? (
         <Loader />
       ) : (
         <View style={GlobalStyles.centeredContainer}>
           <Text style={styles.heading}>Notifications</Text>
-          <FlatList
-            data={notifications}
-            renderItem={renderItem}
-            style={styles.flatList}
-          />
+          {notifications.length === 0 ? (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text style={{ fontSize: 16, fontWeight: "500" }}>
+                No anomalies to show.
+              </Text>
+            </View>
+          ) : (
+            <FlatList
+              data={notifications}
+              renderItem={renderItem}
+              style={styles.flatList}
+            />
+          )}
         </View>
       )}
     </View>
