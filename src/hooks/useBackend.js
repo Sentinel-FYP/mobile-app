@@ -8,11 +8,10 @@ const useBackend = () => {
   const { getAuthToken } = useStorage();
   const [loading, setLoading] = useState(false);
 
-  async function getNotificationsFromServer() {
+  async function getNotificationsFromServer(pageNumber = 1) {
     setLoading(true);
     try {
-      const deviceID = "6558f04547674cc283de271b";
-      const url = `${API_BASE_URL}/anomalyLogs`;
+      const url = `${API_BASE_URL}/anomalyLogs?pageNumber=${pageNumber}&logsPerPage=10`;
       const authToken = await getAuthToken();
       const response = await axios.get(url, {
         headers: { Authorization: `Bearer ${authToken}` },

@@ -22,7 +22,6 @@ let socket = null;
 const HomeScreen = ({ navigation }) => {
   // State variables
   const { loading: edgeLoading, getEdgeDevices } = useBackend();
-  const [moreOptionsVisible, setMoreOptionsVisible] = useState(false);
   const [devices, setDevices] = useState([]);
   const [cameras, setCameras] = useState([]);
   const [selectedDevice, setSelectedDevice] = useState(null);
@@ -60,6 +59,7 @@ const HomeScreen = ({ navigation }) => {
             text: "Delete",
             onPress: async () => {
               // Perform deletion action
+              console.log("deleting camera", cameraForOptions._id);
               socket.emit("cameras:delete", {
                 deviceID: selectedDevice.deviceID,
                 cameraID: cameraForOptions._id,
@@ -104,6 +104,12 @@ const HomeScreen = ({ navigation }) => {
       console.log("Got some cameras: ", cameras);
       setCameras(cameras);
     } catch (error) {
+      if (error.response.status === 500) {
+        Alert.alert(
+          "Error",
+          "Device is offline. Please check the device and try again."
+        );
+      }
       console.error("Error while getting cameras info: ", error);
     }
   };
