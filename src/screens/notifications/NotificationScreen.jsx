@@ -52,13 +52,13 @@ const NotificationScreen = ({ navigation }) => {
     const getLogs = async () => {
       try {
         let logs = await getAnomalies();
-        // console.log("Logs: ", JSON.stringify(logs, null, 2));
+        console.log("Logs: ", JSON.stringify(logs, null, 2));
         logs = logs
           .map((log) => {
             if (log.data.length == 0) return;
             return {
               ...log,
-              title: log.title.toUpperCase(),
+              title: log.title,
             };
           })
           .filter((item) => item !== undefined && item !== null && item !== "");
@@ -75,7 +75,7 @@ const NotificationScreen = ({ navigation }) => {
             if (log.data.length == 0) return;
             return {
               ...log,
-              title: log.title.toUpperCase(),
+              title: log.title,
             };
           })
           .filter((item) => item !== undefined && item !== null && item !== "");
@@ -90,7 +90,7 @@ const NotificationScreen = ({ navigation }) => {
   const renderAnomaly = ({ item, index }) => {
     return (
       <TouchableOpacity
-        style={styles.itemContainer}
+        style={styles.anomalyContainer}
         onPress={() => {
           navigation.navigate("AnomalyClipScreen", { anomaly: item });
         }}
@@ -101,7 +101,7 @@ const NotificationScreen = ({ navigation }) => {
             source={{ uri: `data:image/png;base64,${item.thumbnail}` }}
           />
         </View>
-        <View style={styles.notificationInfoContainer}>
+        <View style={styles.anomalyInfoContainer}>
           <View
             style={{
               flexDirection: "row",
@@ -121,26 +121,10 @@ const NotificationScreen = ({ navigation }) => {
 
   const renderNotification = ({ item, index }) => {
     return (
-      <TouchableOpacity style={styles.itemContainer}>
-        <View
-          style={{
-            height: "100%",
-            width: 50,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <View
-            style={{
-              backgroundColor: COLORS.dangerLight,
-              width: 40,
-              height: 40,
-              borderRadius: 100,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Icon name="home" size={30} color={COLORS.danger} />
+      <TouchableOpacity style={styles.notificationContainer}>
+        <View style={styles.typeOfNotificatoin}>
+          <View style={styles.iconContainer}>
+            <Icon name="notifications-none" size={30} color={COLORS.danger} />
           </View>
         </View>
         <View style={styles.notificationInfoContainer}>
@@ -150,7 +134,7 @@ const NotificationScreen = ({ navigation }) => {
               justifyContent: "space-between",
             }}
           >
-            <Text style={{ fontWeight: "500" }}>{item.title}</Text>
+            <Text style={{ fontWeight: "500" }}>Anomaly Detected</Text>
             <Text style={styles.timeText}>{`${getTime(item.occurredAt)}`}</Text>
           </View>
           <Text
@@ -164,7 +148,7 @@ const NotificationScreen = ({ navigation }) => {
     <View style={GlobalStyles.centeredContainer}>
       <View style={GlobalStyles.centeredContainer}>
         <Text style={styles.heading}>Alerts</Text>
-        <View style={{ width: "100%", marginBottom: 20 }}>
+        <View style={{ width: "100%", marginBottom: 10 }}>
           <Tab
             value={tabIndex}
             onChange={setTabIndex}
@@ -193,18 +177,24 @@ const NotificationScreen = ({ navigation }) => {
           </View>
         )}
         <SectionList
-          sections={tabIndex === 0 ? notifications : anomalies}
+          sections={anomalies}
           keyExtractor={(item, index) => index}
           renderItem={tabIndex === 0 ? renderNotification : renderAnomaly}
           renderSectionHeader={({ section: { title } }) => (
-            <Text style={{ paddingLeft: 15, color: COLORS.darkGray }}>
+            <Text
+              style={{
+                paddingLeft: 15,
+                paddingTop: 10,
+                color: COLORS.darkGray,
+              }}
+            >
               {title}
             </Text>
           )}
           style={styles.flatList}
           contentContainerStyle={{ flexGrow: 1 }}
           refreshing={loading}
-          onRefresh={getAnomalies}
+          onRefresh={tabIndex == 0 ? getNotifications : getAnomalies}
           onEndReached={getNextPage}
           onEndReachedThreshold={0.1}
         />
@@ -216,6 +206,20 @@ const NotificationScreen = ({ navigation }) => {
 export default NotificationScreen;
 
 const styles = StyleSheet.create({
+  iconContainer: {
+    backgroundColor: COLORS.dangerLight,
+    width: 40,
+    height: 40,
+    borderRadius: 100,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  typeOfNotificatoin: {
+    height: "100%",
+    width: "20%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
   flatList: {
     flex: 1,
     width: "100%",
@@ -232,8 +236,14 @@ const styles = StyleSheet.create({
     color: COLORS.darkGray,
   },
 
-  notificationInfoContainer: {
+  anomalyInfoContainer: {
     width: "70%",
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    gap: 5,
+  },
+  notificationInfoContainer: {
+    width: "80%",
     paddingHorizontal: 15,
     paddingVertical: 10,
     gap: 5,
@@ -247,10 +257,24 @@ const styles = StyleSheet.create({
     width: "30%",
     borderRadius: 10,
   },
-  itemContainer: {
+  anomalyContainer: {
     flex: 1,
     flexDirection: "row",
     height: 100,
+    backgroundColor: COLORS.white,
+    padding: 10,
+    marginTop: 10,
+    elevation: 5,
+    shadowColor: "#000",
+    width: "95%",
+    borderRadius: 20,
+    shadowOffset: { width: 0, height: 2, shadowOpacity: 0.3, shadowRadius: 3 },
+    alignSelf: "center",
+  },
+  notificationContainer: {
+    flex: 1,
+    flexDirection: "row",
+    height: 80,
     backgroundColor: COLORS.white,
     padding: 10,
     marginTop: 10,
