@@ -1,7 +1,6 @@
 import {
   View,
   Text,
-  FlatList,
   Image,
   StyleSheet,
   TouchableOpacity,
@@ -13,15 +12,20 @@ import useBackend from "../../hooks/useBackend";
 import Loader from "../../components/Loader";
 import { COLORS } from "../../constants";
 import { formatDateTime, getTime } from "../../util";
+import { Tab } from "@rneui/themed";
+import { Icon } from "@rneui/base";
 
 const NotificationScreen = ({ navigation }) => {
-  const { loading, getNotificationsFromServer } = useBackend();
+  const { loading, getAnomalies, getNotifications } = useBackend();
   const [notifications, setNotifications] = useState([]);
+  const [anomalies, setAnomalies] = useState([]);
+  const [tabIndex, setTabIndex] = useState(0);
+
   const page = useRef(1);
 
   const getNextPage = async () => {
     page.current += 1;
-    const newLogs = await getNotificationsFromServer(page.current);
+    const newLogs = await getAnomalies(page.current);
     let existingLogs = notifications;
     newLogs.forEach((newLog) => {
       if (newLog.data.length === 0) return;
@@ -36,12 +40,36 @@ const NotificationScreen = ({ navigation }) => {
     });
   };
 
+  const checkIfEmpty = () => {
+    if (tabIndex === 0) {
+      return notifications.length === 0;
+    } else {
+      return anomalies.length === 0;
+    }
+  };
+
   useEffect(() => {
     const getLogs = async () => {
       try {
-        let logs = await getNotificationsFromServer();
-        console.log("Logs: ", JSON.stringify(logs, null, 2));
-        // setNotifications(logs.reverse());
+        let logs = await getAnomalies();
+        // console.log("Logs: ", JSON.stringify(logs, null, 2));
+        logs = logs
+          .map((log) => {
+            if (log.data.length == 0) return;
+            return {
+              ...log,
+              title: log.title.toUpperCase(),
+            };
+          })
+          .filter((item) => item !== undefined && item !== null && item !== "");
+        setAnomalies(logs);
+      } catch (error) {
+        console.error("Error while fetching notifications", error);
+      }
+    };
+    const getPushNotifications = async () => {
+      try {
+        let logs = await getNotifications();
         logs = logs
           .map((log) => {
             if (log.data.length == 0) return;
@@ -57,8 +85,9 @@ const NotificationScreen = ({ navigation }) => {
       }
     };
     getLogs();
+    getPushNotifications();
   }, []);
-  const renderItem = ({ item, index }) => {
+  const renderAnomaly = ({ item, index }) => {
     return (
       <TouchableOpacity
         style={styles.itemContainer}
@@ -89,11 +118,69 @@ const NotificationScreen = ({ navigation }) => {
       </TouchableOpacity>
     );
   };
+
+  const renderNotification = ({ item, index }) => {
+    return (
+      <TouchableOpacity style={styles.itemContainer}>
+        <View
+          style={{
+            height: "100%",
+            width: 50,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: COLORS.dangerLight,
+              width: 40,
+              height: 40,
+              borderRadius: 100,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Icon name="home" size={30} color={COLORS.danger} />
+          </View>
+        </View>
+        <View style={styles.notificationInfoContainer}>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+            }}
+          >
+            <Text style={{ fontWeight: "500" }}>{item.title}</Text>
+            <Text style={styles.timeText}>{`${getTime(item.occurredAt)}`}</Text>
+          </View>
+          <Text
+            style={styles.cameraNameText}
+          >{`${item.fromDevice.deviceName} • ${item.fromCamera.cameraName}`}</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
   return (
     <View style={GlobalStyles.centeredContainer}>
       <View style={GlobalStyles.centeredContainer}>
-        <Text style={styles.heading}>Notifications</Text>
-        {notifications.length === 0 && (
+        <Text style={styles.heading}>Alerts</Text>
+        <View style={{ width: "100%", marginBottom: 20 }}>
+          <Tab
+            value={tabIndex}
+            onChange={setTabIndex}
+            dense
+            titleStyle={(active) =>
+              active
+                ? { color: COLORS.primaryColor, fontWeight: "bold" }
+                : { color: COLORS.darkGray }
+            }
+            indicatorStyle={{ backgroundColor: COLORS.primaryColor, height: 3 }}
+          >
+            <Tab.Item>Notifications</Tab.Item>
+            <Tab.Item>Anomalies</Tab.Item>
+          </Tab>
+        </View>
+        {checkIfEmpty() && (
           <View
             style={{
               justifyContent: "center",
@@ -101,14 +188,14 @@ const NotificationScreen = ({ navigation }) => {
             }}
           >
             <Text style={{ fontSize: 16, fontWeight: "500" }}>
-              No anomalies to show.
+              {`No ${tabIndex === 0 ? "notifications" : "anomalies"} to show.`}
             </Text>
           </View>
         )}
         <SectionList
-          sections={notifications}
+          sections={tabIndex === 0 ? notifications : anomalies}
           keyExtractor={(item, index) => index}
-          renderItem={renderItem}
+          renderItem={tabIndex === 0 ? renderNotification : renderAnomaly}
           renderSectionHeader={({ section: { title } }) => (
             <Text style={{ paddingLeft: 15, color: COLORS.darkGray }}>
               {title}
@@ -117,7 +204,7 @@ const NotificationScreen = ({ navigation }) => {
           style={styles.flatList}
           contentContainerStyle={{ flexGrow: 1 }}
           refreshing={loading}
-          onRefresh={getNotificationsFromServer}
+          onRefresh={getAnomalies}
           onEndReached={getNextPage}
           onEndReachedThreshold={0.1}
         />

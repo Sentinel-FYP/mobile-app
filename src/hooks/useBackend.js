@@ -8,10 +8,26 @@ const useBackend = () => {
   const { getAuthToken } = useStorage();
   const [loading, setLoading] = useState(false);
 
-  async function getNotificationsFromServer(pageNumber = 1) {
+  async function getAnomalies(pageNumber = 1) {
     setLoading(true);
     try {
       const url = `${API_BASE_URL}/anomalyLogs?pageNumber=${pageNumber}&logsPerPage=10`;
+      const authToken = await getAuthToken();
+      const response = await axios.get(url, {
+        headers: { Authorization: `Bearer ${authToken}` },
+      });
+      return response.data;
+    } catch (error) {
+      throw error.response.data;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function getNotifications() {
+    setLoading(true);
+    try {
+      const url = `${API_BASE_URL}/notifications`;
       const authToken = await getAuthToken();
       const response = await axios.get(url, {
         headers: { Authorization: `Bearer ${authToken}` },
@@ -139,7 +155,7 @@ const useBackend = () => {
 
   return {
     loading,
-    getNotificationsFromServer,
+    getAnomalies,
     getEdgeDevices,
     registerEdgeDevice,
     getAnomalyLog,
@@ -147,6 +163,7 @@ const useBackend = () => {
     getCamerasFromEdge,
     getCameraByID,
     updateCameraByID,
+    getNotifications,
   };
 };
 
