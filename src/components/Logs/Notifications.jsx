@@ -15,11 +15,11 @@ import { formatDateTime, getTime } from "../../util";
 import { Tab } from "@rneui/themed";
 import { Icon } from "@rneui/base";
 import LogSectionList from "./LogSectionList";
+import { useRecoilState } from "recoil";
+import { notificationsState } from "../../recoil/recoilState";
 
-const Notifications = () => {
+const Notifications = ({ notifications, setNotifications }) => {
   const page = useRef(1);
-  const [notifications, setNotifications] = useState([]);
-
   const { loading, getNotifications } = useBackend();
 
   const getNextPage = async () => {
@@ -82,7 +82,7 @@ const Notifications = () => {
   };
 
   return (
-    <View style={GlobalStyles.container}>
+    <View style={[GlobalStyles.container]}>
       {notifications.length == 0 && (
         <View style={styles.emptyStateTextContainer}>
           <Text style={styles.emptyStateText}>
@@ -94,7 +94,7 @@ const Notifications = () => {
       <LogSectionList
         sections={notifications}
         renderItem={NotificationItem}
-        refreshing={loading}
+        refreshing={false}
         onRefresh={getNotifications}
         onEndReached={getNextPage}
       />

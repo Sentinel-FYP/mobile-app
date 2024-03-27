@@ -18,10 +18,9 @@ import Notifications from "../../components/Logs/Notifications";
 import Anomalies from "../../components/Logs/Anomalies";
 
 const NotificationScreen = ({ navigation }) => {
-  const { loading, getAnomalies, getNotifications } = useBackend();
-  const [notifications, setNotifications] = useState([]);
-  const [anomalies, setAnomalies] = useState([]);
   const [tabIndex, setTabIndex] = useState(0);
+  const [anomalies, setAnomalies] = useState([]);
+  const [notifications, setNotifications] = useState([]);
 
   return (
     <View style={GlobalStyles.centeredContainer}>
@@ -43,8 +42,15 @@ const NotificationScreen = ({ navigation }) => {
             <Tab.Item>Anomalies</Tab.Item>
           </Tab>
         </View>
-        {tabIndex === 0 && <Notifications />}
-        {tabIndex === 1 && <Anomalies />}
+        {tabIndex === 0 && (
+          <Notifications
+            notifications={notifications}
+            setNotifications={setNotifications}
+          />
+        )}
+        {tabIndex === 1 && (
+          <Anomalies anomalies={anomalies} setAnomalies={setAnomalies} />
+        )}
       </View>
     </View>
   );

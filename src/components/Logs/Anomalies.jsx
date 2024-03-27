@@ -16,12 +16,12 @@ import { Tab } from "@rneui/themed";
 import { Icon } from "@rneui/base";
 import LogSectionList from "./LogSectionList";
 import { useNavigation } from "@react-navigation/native";
+import { useRecoilState } from "recoil";
+import { notificationsState } from "../../recoil/recoilState";
 
-const Anomalies = () => {
+const Anomalies = ({ anomalies, setAnomalies }) => {
   const page = useRef(1);
   const navigation = useNavigation();
-  const [anomalies, setAnomalies] = useState([]);
-
   const { loading, getAnomalies } = useBackend();
 
   const getNextPage = async () => {
@@ -91,7 +91,7 @@ const Anomalies = () => {
   };
 
   return (
-    <View style={GlobalStyles.container}>
+    <View style={[GlobalStyles.container]}>
       {anomalies.length == 0 && (
         <View style={styles.emptyStateTextContainer}>
           <Text style={styles.emptyStateText}>{`No anomalies to show.`}</Text>
@@ -101,7 +101,7 @@ const Anomalies = () => {
       <LogSectionList
         sections={anomalies}
         renderItem={AnomalyItem}
-        refreshing={loading}
+        refreshing={false}
         onRefresh={getAnomalies}
         onEndReached={getNextPage}
       />
