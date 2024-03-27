@@ -10,6 +10,6 @@ export const GlobalStyles = StyleSheet.create({
   container: {
     flex: 1,
     width: "100%",
-    padding: 15,
+    paddingHorizontal: 15,
   },
 });
