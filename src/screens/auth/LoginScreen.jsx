@@ -12,6 +12,8 @@ import useAuth from "../../hooks/useAuth";
 import useStorage from "../../hooks/useStorage";
 import Loader from "../../components/Loader";
 import { OneSignal } from "react-native-onesignal";
+import ScreenHeader from "../../components/ScreenHeader";
+import ScreenFooter from "../../components/ScreenFooter";
 
 const Login = ({ navigation }) => {
   // Variables
@@ -54,11 +56,13 @@ const Login = ({ navigation }) => {
 
   return (
     <ScrollView
-      style={{ width: "100%" }}
       contentContainerStyle={styles.scrollViewContentContainer}
       keyboardShouldPersistTaps="handled"
     >
-      <Text h2>Login</Text>
+      <ScreenHeader
+        title={"Hi, Welcome Back"}
+        description={"Login to your account"}
+      />
       <View style={styles.inputContainer}>
         <Input
           label={"Email"}
@@ -80,11 +84,14 @@ const Login = ({ navigation }) => {
             underlayColor: COLORS.white,
           }}
         />
-        <TouchableOpacity style={styles.forgotPasswordContainer}>
+        <TouchableOpacity
+          style={styles.forgotPasswordContainer}
+          onPress={() => navigation.navigate("ForgotPassword")}
+        >
           <Text style={styles.forgotPasswordText}>Forgot password?</Text>
         </TouchableOpacity>
 
-        <View style={{ marginTop: 20 }}>
+        <View style={styles.btnContainer}>
           {loading ? (
             <Loader />
           ) : (
@@ -92,25 +99,29 @@ const Login = ({ navigation }) => {
               color="primary"
               title={"Login"}
               size="lg"
-              containerStyle={{ width: 200 }}
+              containerStyle={{ width: "80%" }}
               onPress={handleLoginPress}
               radius={"xl"}
             />
           )}
         </View>
       </View>
-      <Text style={{ paddingVertical: 10 }}>
-        Don't have an account?{" "}
-        <Text style={styles.registerNowText} onPress={handleRegisterNowPress}>
-          Register Now
-        </Text>
-      </Text>
+      <ScreenFooter
+        description={"Don't have an account?"}
+        linkText={"Register Now"}
+        linkPress={handleRegisterNowPress}
+      />
     </ScrollView>
   );
 };
 
 export default Login;
 const styles = StyleSheet.create({
+  btnContainer: {
+    marginTop: 20,
+    width: "100%",
+    alignItems: "center",
+  },
   forgotPasswordContainer: {
     alignSelf: "flex-end",
     padding: 10,
@@ -130,7 +141,7 @@ const styles = StyleSheet.create({
   scrollViewContentContainer: {
     flexGrow: 1,
     width: "100%",
-    justifyContent: "center",
+    paddingVertical: 30,
     alignItems: "center",
     paddingHorizontal: 30,
   },

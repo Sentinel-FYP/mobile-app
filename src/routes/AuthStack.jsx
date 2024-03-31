@@ -3,6 +3,7 @@ import LoginScreen from "../screens/auth/LoginScreen";
 import RegisterScreen from "../screens/auth/RegisterScreen";
 
 import { COLORS } from "../constants";
+import ForgotPasswordScreen from "../screens/auth/ForgotPasswordScreen";
 
 const AuthStack = createNativeStackNavigator();
 
@@ -21,6 +22,10 @@ const AuthStackScreen = () => {
         options={{ headerShown: false }}
       />
       <AuthStack.Screen name="Register" component={RegisterScreen} />
+      <AuthStack.Screen
+        name="ForgotPassword"
+        component={ForgotPasswordScreen}
+      />
     </AuthStack.Navigator>
   );
 };
