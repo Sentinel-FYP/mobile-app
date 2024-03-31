@@ -1,4 +1,10 @@
-import { View, StyleSheet, ScrollView, Alert } from "react-native";
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  Alert,
+  TouchableOpacity,
+} from "react-native";
 import { useState } from "react";
 import { Button, Input, Text } from "@rneui/themed";
 import { COLORS } from "../../constants";
@@ -13,6 +19,7 @@ const Login = ({ navigation }) => {
   const { setAuthToken, setLocalUser } = useStorage();
   const [email, setEmail] = useState({ value: null, errorMessage: null });
   const [password, setPassword] = useState({ value: null, errorMessage: null });
+  const [passwordVisibility, setPasswordVisibility] = useState(false);
 
   // Event handlers
   const handleRegisterNowPress = () => {
@@ -66,8 +73,17 @@ const Login = ({ navigation }) => {
           value={password.value}
           onChangeText={(value) => setPassword({ ...password, value: value })}
           errorMessage={password.errorMessage}
-          secureTextEntry
+          secureTextEntry={passwordVisibility}
+          rightIcon={{
+            name: passwordVisibility ? "visibility" : "visibility-off",
+            onPress: () => setPasswordVisibility(!passwordVisibility),
+            underlayColor: COLORS.white,
+          }}
         />
+        <TouchableOpacity style={styles.forgotPasswordContainer}>
+          <Text style={styles.forgotPasswordText}>Forgot password?</Text>
+        </TouchableOpacity>
+
         <View style={{ marginTop: 20 }}>
           {loading ? (
             <Loader />
@@ -95,6 +111,13 @@ const Login = ({ navigation }) => {
 
 export default Login;
 const styles = StyleSheet.create({
+  forgotPasswordContainer: {
+    alignSelf: "flex-end",
+    padding: 10,
+  },
+  forgotPasswordText: {
+    color: COLORS.primaryColor,
+  },
   registerNowText: {
     color: COLORS.primaryColor,
     fontWeight: "bold",
