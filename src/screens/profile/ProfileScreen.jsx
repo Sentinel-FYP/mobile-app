@@ -74,7 +74,10 @@ const AddDeviceScreen = ({ navigation }) => {
       console.log(userData);
       await setLocalUser(userData.user);
     } catch (error) {
-      Alert.alert("Error while updating profile", error?.message);
+      Alert.alert(
+        "Error while updating profile",
+        error.message || "An error occurred"
+      );
       console.error("Error while updating profile:", error);
     }
   };

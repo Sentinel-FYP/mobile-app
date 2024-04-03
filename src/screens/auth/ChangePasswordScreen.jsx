@@ -64,7 +64,7 @@ const ChangePasswordScreen = ({ navigation, route }) => {
     } catch (error) {
       Alert.alert(
         "Error while changing password. Try again later.",
-        error.message
+        error.message || "An error occurred"
       );
       console.error("Error while changing password.", error.message);
     }

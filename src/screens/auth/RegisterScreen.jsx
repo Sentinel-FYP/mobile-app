@@ -104,7 +104,7 @@ const Register = ({ navigation }) => {
     } catch (error) {
       Alert.alert(
         "Error while registering user",
-        error.response?.data?.message
+        error.message || "An error occurred"
       );
       console.error(
         `Error while registering user: Status: ${error.response?.status} Message: ${error.response?.data?.message}

@@ -49,7 +49,10 @@ const Login = ({ navigation }) => {
       await setLocalUser(userData.user);
       navigation.navigate("TabNavigation");
     } catch (error) {
-      Alert.alert("Error while logging in", error.message);
+      Alert.alert(
+        "Error while logging in",
+        error.message || "An error occurred"
+      );
       console.error("Error while logging in: ", error.message);
     }
   };
