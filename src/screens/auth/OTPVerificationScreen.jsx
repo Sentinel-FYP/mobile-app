@@ -12,7 +12,7 @@ import OTPTextInput from "react-native-otp-textinput";
 const OTPVerificationScreen = ({ navigation, route }) => {
   // Variables
   const { verifyOTP, getOTP, loading } = useAuth();
-  const { email } = route.params;
+  const { email, registering } = route.params;
   const { setAuthToken, setLocalUser } = useStorage();
   const [otp, setOtp] = useState({ value: null, errorMessage: null });
 
@@ -42,10 +42,17 @@ const OTPVerificationScreen = ({ navigation, route }) => {
       const response = await verifyOTP(email, otp.value);
       console.log(response);
       const { token, userId } = response;
-      navigation.navigate("ChangePassword", { token, userId });
+      if (registering) {
+        navigation.navigate("Login");
+      } else {
+        navigation.navigate("ChangePassword", { token, userId });
+      }
     } catch (error) {
-      Alert.alert("Error while verifying otp", error.message);
-      console.error("Error while verifying otp: ", error.message);
+      Alert.alert(
+        "Error while verifying otp",
+        error.message || "An error occurred"
+      );
+      console.error("Error while verifying otp: ", error.message || error);
     }
   };
 

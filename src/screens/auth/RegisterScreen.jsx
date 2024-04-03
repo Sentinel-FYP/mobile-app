@@ -7,7 +7,8 @@ import Loader from "../../components/Loader";
 
 const Register = ({ navigation }) => {
   // Variables
-  const { register, loading } = useAuth();
+  const { register, getOTP, loading } = useAuth();
+  const [passwordVisibility, setPasswordVisibility] = useState(false);
   const [firstName, setFirstName] = useState({
     value: null,
     errorMessage: null,
@@ -90,10 +91,21 @@ const Register = ({ navigation }) => {
         password: password.value,
         confirmPassword: confirmPassword.value,
       };
-      const user = await register(userData);
-      navigation.navigate("Login");
+      console.log("Registering user");
+      await register(userData);
+      console.log("User registered successfully");
+      await getOTP(email.value);
+      console.log("OTP sent successfully");
+      navigation.navigate("OTPVerification", {
+        registering: true,
+        email: email.value,
+      });
+      console.log("Navigated to OTPVerification");
     } catch (error) {
-      Alert.alert("Error while registering user", error);
+      Alert.alert(
+        "Error while registering user",
+        error.response?.data?.message
+      );
       console.error(
         `Error while registering user: Status: ${error.response?.status} Message: ${error.response?.data?.message}
         `
@@ -135,7 +147,12 @@ const Register = ({ navigation }) => {
           value={password.value}
           errorMessage={password.errorMessage}
           onChangeText={(value) => setPassword({ ...password, value })}
-          secureTextEntry
+          secureTextEntry={!passwordVisibility}
+          rightIcon={{
+            name: !passwordVisibility ? "visibility-off" : "visibility",
+            onPress: () => setPasswordVisibility(!passwordVisibility),
+            underlayColor: COLORS.white,
+          }}
         />
         <Input
           label={"Confirm Password"}
@@ -145,7 +162,7 @@ const Register = ({ navigation }) => {
           onChangeText={(value) =>
             setConfirmPassword({ ...confirmPassword, value })
           }
-          secureTextEntry
+          secureTextEntry={!passwordVisibility}
         />
         <View style={styles.loaderContainer}>
           {loading ? (

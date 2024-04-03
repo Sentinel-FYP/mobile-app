@@ -45,10 +45,14 @@ const ChangePasswordScreen = ({ navigation, route }) => {
       return;
     }
 
-    if (confirmPassword.value != password.value) {
+    if (password.value != confirmPassword.value) {
+      setPassword({
+        ...password,
+        errorMessage: "Password and confirm password do not match.",
+      });
       setConfirmPassword({
         ...confirmPassword,
-        errorMessage: "Password do not match.",
+        errorMessage: "Password and confirm password do not match.",
       });
       return;
     }
