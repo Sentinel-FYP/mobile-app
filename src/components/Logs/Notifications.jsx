@@ -65,6 +65,9 @@ const Notifications = ({ notifications, setNotifications }) => {
           <Text
             style={styles.cameraNameText}
           >{`${item.fromDevice.deviceName} • ${item.fromCamera.cameraName}`}</Text>
+          <Text style={styles.cameraNameText}>
+            {formatDateTime(item.createdAt).date}
+          </Text>
         </View>
       </TouchableOpacity>
     );
@@ -135,7 +138,7 @@ const styles = StyleSheet.create({
     width: "80%",
     paddingHorizontal: 15,
     paddingVertical: 10,
-    gap: 5,
+    gap: 3,
   },
 
   notificationContainer: {
