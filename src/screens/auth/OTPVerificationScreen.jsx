@@ -1,42 +1,51 @@
 import { View, StyleSheet, ScrollView, Alert } from "react-native";
 import { useState } from "react";
-import { Button, Input, Text } from "@rneui/themed";
+import { Button } from "@rneui/themed";
 import { COLORS } from "../../constants";
 import useAuth from "../../hooks/useAuth";
 import useStorage from "../../hooks/useStorage";
 import Loader from "../../components/Loader";
-import { OneSignal } from "react-native-onesignal";
 import ScreenHeader from "../../components/ScreenHeader";
 import ScreenFooter from "../../components/ScreenFooter";
+import OTPTextInput from "react-native-otp-textinput";
 
-const ForgotPasswordScreen = ({ navigation }) => {
+const OTPVerificationScreen = ({ navigation, route }) => {
   // Variables
-  const { getOTP, loading } = useAuth();
+  const { verifyOTP, getOTP, loading } = useAuth();
+  const { email } = route.params;
   const { setAuthToken, setLocalUser } = useStorage();
-  const [email, setEmail] = useState({ value: null, errorMessage: null });
+  const [otp, setOtp] = useState({ value: null, errorMessage: null });
 
   // Event handlers
-  const handleBackToLogin = () => {
-    navigation.navigate("Login");
-  };
-
-  const handleNextPress = async () => {
-    setEmail({ ...email, errorMessage: null });
-
-    if (!email.value) {
-      setEmail({ ...email, errorMessage: "Please fill out all fields." });
-      return;
-    }
-
+  const handleResendPress = async () => {
     try {
-      const response = await getOTP(email.value);
+      const response = await getOTP(email);
       console.log(response);
-      navigation.navigate("OTPVerification", { email: email.value });
+      Alert.alert("OTP sent successfully");
     } catch (error) {
       console.error(
         "Error while getting OTP: ",
         JSON.stringify(error, null, 2)
       );
+    }
+  };
+
+  const handleNextPress = async () => {
+    setOtp({ ...otp, errorMessage: null });
+
+    if (!otp.value) {
+      setOtp({ ...otp, errorMessage: "Please fill out all fields." });
+      return;
+    }
+
+    try {
+      const response = await verifyOTP(email, otp.value);
+      console.log(response);
+      const { token, userId } = response;
+      navigation.navigate("ChangePassword", { token, userId });
+    } catch (error) {
+      Alert.alert("Error while verifying otp", error.message);
+      console.error("Error while verifying otp: ", error.message);
     }
   };
 
@@ -46,16 +55,22 @@ const ForgotPasswordScreen = ({ navigation }) => {
       keyboardShouldPersistTaps="handled"
     >
       <ScreenHeader
-        title={"Password Slip Up?"}
-        description={"We will sort it out for you."}
+        title={"Enter OTP"}
+        description={"We sent a verification code to your email address."}
       />
       <View style={styles.inputContainer}>
-        <Input
-          label={"Email"}
-          labelStyle={styles.inputLabel}
-          value={email.value}
-          onChangeText={(value) => setEmail({ ...email, value: value })}
-          errorMessage={email.errorMessage}
+        <OTPTextInput
+          textInputStyle={{
+            borderWidth: 4,
+            borderRadius: 10,
+            width: 40,
+            height: 40,
+          }}
+          tintColor={COLORS.primaryColor}
+          handleTextChange={(text) => setOtp({ ...otp, value: text })}
+          keyboardType="numeric"
+          inputCount={6}
+          autoFocus
         />
 
         <View style={styles.btnContainer}>
@@ -74,18 +89,18 @@ const ForgotPasswordScreen = ({ navigation }) => {
         </View>
       </View>
       <ScreenFooter
-        description={"Back to"}
-        linkText={"Login"}
-        linkPress={handleBackToLogin}
+        description={"Didn't receive it?"}
+        linkText={"Resend OTP"}
+        linkPress={handleResendPress}
       />
     </ScrollView>
   );
 };
 
-export default ForgotPasswordScreen;
+export default OTPVerificationScreen;
 const styles = StyleSheet.create({
   btnContainer: {
-    marginTop: 20,
+    marginTop: 40,
     width: "100%",
     alignItems: "center",
   },

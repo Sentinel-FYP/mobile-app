@@ -4,6 +4,8 @@ import RegisterScreen from "../screens/auth/RegisterScreen";
 
 import { COLORS } from "../constants";
 import ForgotPasswordScreen from "../screens/auth/ForgotPasswordScreen";
+import OTPVerificationScreen from "../screens/auth/OTPVerificationScreen";
+import ChangePasswordScreen from "../screens/auth/ChangePasswordScreen";
 
 const AuthStack = createNativeStackNavigator();
 
@@ -25,6 +27,14 @@ const AuthStackScreen = () => {
       <AuthStack.Screen
         name="ForgotPassword"
         component={ForgotPasswordScreen}
+      />
+      <AuthStack.Screen
+        name="OTPVerification"
+        component={OTPVerificationScreen}
+      />
+      <AuthStack.Screen
+        name="ChangePassword"
+        component={ChangePasswordScreen}
       />
     </AuthStack.Navigator>
   );

@@ -28,6 +28,7 @@
     "react-native-fast-image": "^8.6.3",
     "react-native-gesture-handler": "^2.14.0",
     "react-native-onesignal": "^5.0.5",
+    "react-native-otp-textinput": "^1.1.5",
     "react-native-permissions": "^4.0.0",
     "react-native-pressable-opacity": "^1.0.10",
     "react-native-reanimated": "^3.6.1",

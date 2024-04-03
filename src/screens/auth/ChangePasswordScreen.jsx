@@ -1,56 +1,68 @@
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  Alert,
-  TouchableOpacity,
-} from "react-native";
+import { View, StyleSheet, ScrollView, Alert } from "react-native";
 import { useState } from "react";
-import { Button, Input, Text } from "@rneui/themed";
+import { Button, Input } from "@rneui/themed";
 import { COLORS } from "../../constants";
 import useAuth from "../../hooks/useAuth";
 import useStorage from "../../hooks/useStorage";
 import Loader from "../../components/Loader";
-import { OneSignal } from "react-native-onesignal";
 import ScreenHeader from "../../components/ScreenHeader";
 import ScreenFooter from "../../components/ScreenFooter";
+import OTPTextInput from "react-native-otp-textinput";
 
-const Login = ({ navigation }) => {
+const ChangePasswordScreen = ({ navigation, route }) => {
   // Variables
-  const { login, loading } = useAuth();
-  const { setAuthToken, setLocalUser } = useStorage();
-  const [email, setEmail] = useState({ value: null, errorMessage: null });
-  const [password, setPassword] = useState({ value: null, errorMessage: null });
+  const { resetPassword, loading } = useAuth();
+  const { userId, token } = route.params;
   const [passwordVisibility, setPasswordVisibility] = useState(false);
+  const [password, setPassword] = useState({ value: null, errorMessage: null });
+  const [confirmPassword, setConfirmPassword] = useState({
+    value: null,
+    errorMessage: null,
+  });
 
   // Event handlers
-  const handleRegisterNowPress = () => {
-    navigation.navigate("Register");
+  const handleBackToLogin = () => {
+    try {
+      navigation.navigate("Login");
+    } catch (error) {
+      console.error("Error while navigating to Login: ", error);
+    }
   };
 
-  const handleLoginPress = async () => {
-    setEmail({ ...email, errorMessage: null });
+  const handleConfirmPress = async () => {
     setPassword({ ...password, errorMessage: null });
-    if (!email.value) {
-      setEmail({ ...email, errorMessage: "Please fill out all fields." });
-    }
+    setConfirmPassword({ ...confirmPassword, errorMessage: null });
+
     if (!password.value) {
       setPassword({ ...password, errorMessage: "Please fill out all fields." });
+      return;
     }
-    if (!(email.value && password.value)) {
+    if (!confirmPassword.value) {
+      setConfirmPassword({
+        ...confirmPassword,
+        errorMessage: "Please fill out all fields",
+      });
+      return;
+    }
+
+    if (confirmPassword.value != password.value) {
+      setConfirmPassword({
+        ...confirmPassword,
+        errorMessage: "Password do not match.",
+      });
       return;
     }
 
     try {
-      const userData = await login(email.value, password.value);
-      console.log(userData);
-      OneSignal.login(userData.user.userID);
-      await setAuthToken(userData.token);
-      await setLocalUser(userData.user);
-      navigation.navigate("TabNavigation");
+      const response = await resetPassword(userId, token, password.value);
+      console.log(response);
+      navigation.navigate("Login");
     } catch (error) {
-      Alert.alert("Error while logging in", error.message);
-      console.error("Error while logging in: ", error.message);
+      Alert.alert(
+        "Error while changing password. Try again later.",
+        error.message
+      );
+      console.error("Error while changing password.", error.message);
     }
   };
 
@@ -60,23 +72,16 @@ const Login = ({ navigation }) => {
       keyboardShouldPersistTaps="handled"
     >
       <ScreenHeader
-        title={"Hi, Welcome Back"}
-        description={"Login to your account"}
+        title={"Reset Password"}
+        description={"Enter your new password."}
       />
       <View style={styles.inputContainer}>
-        <Input
-          label={"Email"}
-          labelStyle={styles.inputLabel}
-          value={email.value}
-          onChangeText={(value) => setEmail({ ...email, value: value })}
-          errorMessage={email.errorMessage}
-        />
         <Input
           label={"Password"}
           labelStyle={styles.inputLabel}
           value={password.value}
-          onChangeText={(value) => setPassword({ ...password, value: value })}
           errorMessage={password.errorMessage}
+          onChangeText={(value) => setPassword({ ...password, value })}
           secureTextEntry={!passwordVisibility}
           rightIcon={{
             name: !passwordVisibility ? "visibility-off" : "visibility",
@@ -84,12 +89,16 @@ const Login = ({ navigation }) => {
             underlayColor: COLORS.white,
           }}
         />
-        <TouchableOpacity
-          style={styles.forgotPasswordContainer}
-          onPress={() => navigation.navigate("ForgotPassword")}
-        >
-          <Text style={styles.forgotPasswordText}>Forgot password?</Text>
-        </TouchableOpacity>
+        <Input
+          label={"Confirm Password"}
+          labelStyle={styles.inputLabel}
+          value={confirmPassword.value}
+          errorMessage={confirmPassword.errorMessage}
+          onChangeText={(value) =>
+            setConfirmPassword({ ...confirmPassword, value })
+          }
+          secureTextEntry={!passwordVisibility}
+        />
 
         <View style={styles.btnContainer}>
           {loading ? (
@@ -97,28 +106,28 @@ const Login = ({ navigation }) => {
           ) : (
             <Button
               color="primary"
-              title={"Login"}
+              title={"Confirm"}
               size="lg"
               containerStyle={{ width: "80%" }}
-              onPress={handleLoginPress}
+              onPress={handleConfirmPress}
               radius={"xl"}
             />
           )}
         </View>
       </View>
       <ScreenFooter
-        description={"Don't have an account?"}
-        linkText={"Register Now"}
-        linkPress={handleRegisterNowPress}
+        description={"Back to"}
+        linkText={"Login"}
+        linkPress={handleBackToLogin}
       />
     </ScrollView>
   );
 };
 
-export default Login;
+export default ChangePasswordScreen;
 const styles = StyleSheet.create({
   btnContainer: {
-    marginTop: 20,
+    marginTop: 40,
     width: "100%",
     alignItems: "center",
   },
