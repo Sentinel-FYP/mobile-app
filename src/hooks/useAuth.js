@@ -49,7 +49,6 @@ const useAuth = () => {
 
   async function getOTP(email) {
     setLoading(true);
-    console.log("getting otp for", email);
     try {
       const otpUrl = API_BASE_URL + `/otp?email=${email}`;
       const response = await axios.get(otpUrl);
@@ -64,7 +63,6 @@ const useAuth = () => {
   async function verifyOTP(email, otp) {
     setLoading(true);
     try {
-      console.log("verifying otp for", email, otp);
       const otpUrl = API_BASE_URL + `/otp/verify`;
       const response = await axios.post(otpUrl, { email, otp });
       return response.data;
@@ -78,7 +76,6 @@ const useAuth = () => {
   async function resetPassword(userId, token, password) {
     setLoading(true);
     try {
-      console.log("changing password", userId, token, password);
       const otpUrl = API_BASE_URL + `/otp/reset/password`;
       const response = await axios.post(otpUrl, { userId, token, password });
       return response.data;

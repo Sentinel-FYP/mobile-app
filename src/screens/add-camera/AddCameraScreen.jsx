@@ -108,7 +108,6 @@ const AddCameraScreen = ({ route }) => {
     });
   };
 
-  //TODO: implement this function once the events are clear on postman
   const onGetDiscoveredCameras = (data) => {
     console.log("Discovered Cameras: ", data);
     setCameras((prev) => {

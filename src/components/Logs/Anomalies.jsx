@@ -35,7 +35,6 @@ const Anomalies = ({ anomalies, setAnomalies }) => {
     const getAnomaliesFromServer = async () => {
       try {
         let logs = await getAnomalies();
-        console.log("Logs: ", JSON.stringify(logs, null, 2));
         logs = logs
           .map((log) => {
             if (log.data.length == 0) return;
