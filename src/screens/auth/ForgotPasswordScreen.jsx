@@ -17,7 +17,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
 
   // Event handlers
   const handleBackToLogin = () => {
-    navigation.navigate("Login");
+    navigation.replace("Login");
   };
 
   const handleNextPress = async () => {

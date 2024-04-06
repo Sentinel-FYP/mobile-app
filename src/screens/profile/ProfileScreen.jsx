@@ -86,7 +86,7 @@ const AddDeviceScreen = ({ navigation }) => {
     try {
       await logout();
       OneSignal.logout();
-      navigation.navigate("AuthStack");
+      navigation.replace("AuthStack");
     } catch (error) {
       console.error("Error while logging out: ", error);
     }

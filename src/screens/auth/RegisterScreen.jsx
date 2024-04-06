@@ -23,7 +23,7 @@ const Register = ({ navigation }) => {
 
   // Event handlers
   const handleLoginPress = () => {
-    navigation.navigate("Login");
+    navigation.replace("Login");
   };
   const handleRegisterPress = async () => {
     setFirstName({ ...firstName, errorMessage: null });

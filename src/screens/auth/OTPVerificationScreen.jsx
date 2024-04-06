@@ -43,7 +43,7 @@ const OTPVerificationScreen = ({ navigation, route }) => {
       console.log(response);
       const { token, userId } = response;
       if (registering) {
-        navigation.navigate("Login");
+        navigation.replace("Login");
       } else {
         navigation.navigate("ChangePassword", { token, userId });
       }

@@ -23,7 +23,7 @@ const ChangePasswordScreen = ({ navigation, route }) => {
   // Event handlers
   const handleBackToLogin = () => {
     try {
-      navigation.navigate("Login");
+      navigation.replace("Login");
     } catch (error) {
       console.error("Error while navigating to Login: ", error);
     }
@@ -60,7 +60,7 @@ const ChangePasswordScreen = ({ navigation, route }) => {
     try {
       const response = await resetPassword(userId, token, password.value);
       console.log(response);
-      navigation.navigate("Login");
+      navigation.replace("Login");
     } catch (error) {
       Alert.alert(
         "Error while changing password. Try again later.",
