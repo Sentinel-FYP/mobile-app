@@ -34,7 +34,6 @@ const HomeScreen = ({ navigation }) => {
 
   // Functions
   const showMenu = (event) => {
-    console.log("event: ", event.nativeEvent);
     setMenuPosition({ x: event.nativeEvent.pageX, y: event.nativeEvent.pageY });
     setMenuVisible(true);
   };
@@ -91,7 +90,7 @@ const HomeScreen = ({ navigation }) => {
   const getDevicesInfo = async () => {
     try {
       const devices = await getEdgeDevices();
-      console.log("Got some devices: ", devices);
+
       setDevices(devices);
     } catch (error) {
       console.error("Error while getting devices info: ", error);
@@ -101,7 +100,6 @@ const HomeScreen = ({ navigation }) => {
   const getCameras = async (deviceID) => {
     try {
       const cameras = await getCamerasFromEdge(deviceID);
-      console.log("Got some cameras: ", cameras);
       setCameras(cameras);
     } catch (error) {
       if (error.response.status === 500) {
@@ -114,9 +112,19 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
+  const onCameraAdded = (data) => {
+    console.log("Camera added home: ", data);
+    if (data.deviceID == selectedDevice.deviceID) {
+      setCameras((prev) => {
+        return [...prev, data.camera];
+      });
+    }
+  };
+
   const startSocket = async () => {
     try {
       socket = await initializeSocket();
+      socket.on("cameras:added", onCameraAdded);
       socket.emit("room:join", { deviceID: DEVICE_ID });
     } catch (error) {
       console.error("Error while connecting to socket: ", error);
@@ -147,11 +155,11 @@ const HomeScreen = ({ navigation }) => {
     }
   }, [selectedDevice]);
 
-  useFocusEffect(
-    useCallback(() => {
-      getDevicesInfo();
-    }, [])
-  );
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     getDevicesInfo();
+  //   }, [])
+  // );
 
   return (
     <View style={GlobalStyles.container}>
