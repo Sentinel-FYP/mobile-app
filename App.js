@@ -5,7 +5,7 @@ import { COLORS, ONESIGNAL_APP_ID } from "./src/constants";
 import { ThemeProvider, createTheme } from "@rneui/themed";
 import { RecoilRoot } from "recoil";
 import { LogLevel, OneSignal } from "react-native-onesignal";
-import { useNavigation } from "@react-navigation/native";
+import ErrorBoundary from "react-native-error-boundary";
 const theme = createTheme({
   lightColors: {
     primary: COLORS.primaryColor,
@@ -31,17 +31,16 @@ const App = () => {
   // requestPermission will show the native iOS or Android notification permission prompt.
   // We recommend removing the following code and instead using an In-App Message to prompt for notification permission
   OneSignal.Notifications.requestPermission(true);
-  try {
-    return (
+
+  return (
+    <ErrorBoundary>
       <RecoilRoot>
         <ThemeProvider theme={theme}>
           <Router />
         </ThemeProvider>
       </RecoilRoot>
-    );
-  } catch (error) {
-    console.error("Error in app: ", error);
-  }
+    </ErrorBoundary>
+  );
 };
 
 export default App;
