@@ -31,14 +31,17 @@ const App = () => {
   // requestPermission will show the native iOS or Android notification permission prompt.
   // We recommend removing the following code and instead using an In-App Message to prompt for notification permission
   OneSignal.Notifications.requestPermission(true);
-
-  return (
-    <RecoilRoot>
-      <ThemeProvider theme={theme}>
-        <Router />
-      </ThemeProvider>
-    </RecoilRoot>
-  );
+  try {
+    return (
+      <RecoilRoot>
+        <ThemeProvider theme={theme}>
+          <Router />
+        </ThemeProvider>
+      </RecoilRoot>
+    );
+  } catch (error) {
+    console.error("Error in app: ", error);
+  }
 };
 
 export default App;
