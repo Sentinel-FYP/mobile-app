@@ -54,31 +54,35 @@ const Anomalies = ({ anomalies, setAnomalies }) => {
 
   const AnomalyItem = ({ item, index }) => {
     return (
-      <TouchableOpacity
-        style={styles.anomalyContainer}
-        onPress={() => {
-          navigation.navigate("AnomalyClipScreen", { anomaly: item });
-        }}
-      >
-        <View style={styles.imageContainer}>
-          <Image
-            style={styles.anomalyImage}
-            source={{ uri: `data:image/png;base64,${item.thumbnail}` }}
-          />
-        </View>
-        <View style={styles.anomalyInfoContainer}>
-          <View style={styles.titleAndTimeContainer}>
-            <Text style={styles.title}>Anomaly Detected</Text>
-            <Text style={styles.timeText}>{`${getTime(item.occurredAt)}`}</Text>
+      item && (
+        <TouchableOpacity
+          style={styles.anomalyContainer}
+          onPress={() => {
+            navigation.navigate("AnomalyClipScreen", { anomaly: item });
+          }}
+        >
+          <View style={styles.imageContainer}>
+            <Image
+              style={styles.anomalyImage}
+              source={{ uri: `data:image/png;base64,${item.thumbnail}` }}
+            />
           </View>
-          <Text
-            style={styles.cameraNameText}
-          >{`${item.fromDevice.deviceName} • ${item.fromCamera.cameraName}`}</Text>
-          <Text style={styles.cameraNameText}>
-            {formatDateTime(item.createdAt).date}
-          </Text>
-        </View>
-      </TouchableOpacity>
+          <View style={styles.anomalyInfoContainer}>
+            <View style={styles.titleAndTimeContainer}>
+              <Text style={styles.title}>Anomaly Detected</Text>
+              <Text style={styles.timeText}>{`${getTime(
+                item.occurredAt
+              )}`}</Text>
+            </View>
+            <Text
+              style={styles.cameraNameText}
+            >{`${item.fromDevice?.deviceName} • ${item.fromCamera?.cameraName}`}</Text>
+            <Text style={styles.cameraNameText}>
+              {formatDateTime(item.createdAt).date}
+            </Text>
+          </View>
+        </TouchableOpacity>
+      )
     );
   };
 

@@ -51,25 +51,29 @@ const Notifications = ({ notifications, setNotifications }) => {
 
   const NotificationItem = ({ item, index }) => {
     return (
-      <TouchableOpacity style={styles.notificationContainer}>
-        <View style={styles.typeOfNotificatoin}>
-          <View style={styles.iconContainer}>
-            <Icon name="notifications-none" size={30} color={COLORS.danger} />
+      item && (
+        <TouchableOpacity style={styles.notificationContainer}>
+          <View style={styles.typeOfNotificatoin}>
+            <View style={styles.iconContainer}>
+              <Icon name="notifications-none" size={30} color={COLORS.danger} />
+            </View>
           </View>
-        </View>
-        <View style={styles.notificationInfoContainer}>
-          <View style={styles.titleAndTimeContainer}>
-            <Text style={styles.title}>Anomaly Detected</Text>
-            <Text style={styles.timeText}>{`${getTime(item.occurredAt)}`}</Text>
+          <View style={styles.notificationInfoContainer}>
+            <View style={styles.titleAndTimeContainer}>
+              <Text style={styles.title}>Anomaly Detected</Text>
+              <Text style={styles.timeText}>{`${getTime(
+                item.occurredAt
+              )}`}</Text>
+            </View>
+            <Text
+              style={styles.cameraNameText}
+            >{`${item.fromDevice?.deviceName} • ${item.fromCamera?.cameraName}`}</Text>
+            <Text style={styles.cameraNameText}>
+              {formatDateTime(item.createdAt).date}
+            </Text>
           </View>
-          <Text
-            style={styles.cameraNameText}
-          >{`${item.fromDevice.deviceName} • ${item.fromCamera.cameraName}`}</Text>
-          <Text style={styles.cameraNameText}>
-            {formatDateTime(item.createdAt).date}
-          </Text>
-        </View>
-      </TouchableOpacity>
+        </TouchableOpacity>
+      )
     );
   };
 

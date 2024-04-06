@@ -1,3 +1,4 @@
+//TODO: check that on add camera works by adding a camera and also add on camera delete once implemented on backend
 import {
   View,
   Text,
